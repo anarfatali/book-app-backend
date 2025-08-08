@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -48,7 +47,7 @@ public class FollowEntity implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private FollowStatus status; // PENDING, APPROVED
+    private FollowStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;

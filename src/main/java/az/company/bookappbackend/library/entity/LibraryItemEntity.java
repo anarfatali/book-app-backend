@@ -1,8 +1,11 @@
-package az.company.bookappbackend.social.entity;
+package az.company.bookappbackend.library.entity;
 
-import az.company.bookappbackend.user.entity.UserEntity;
+import az.company.bookappbackend.book.entity.BookEntity;
+import az.company.bookappbackend.common.enums.ReadingStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,21 +19,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.Instant;
 
-@Data
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "likes",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
-@EqualsAndHashCode(exclude = {"user", "post"})
-public class LikeEntity implements Serializable {
+@Table(name = "library_items",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"library_id", "book_id"}))
+@EqualsAndHashCode(exclude = {"book", "library"})
+public class LibraryItemEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -40,14 +41,14 @@ public class LikeEntity implements Serializable {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @JoinColumn(name = "library_id", nullable = false)
+    private LibraryEntity library;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
-    private PostEntity post;
+    @JoinColumn(name = "book_id", nullable = false)
+    private BookEntity book;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp
-    private Instant createdAt;
+    @Column(name = "reading_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ReadingStatus readingStatus;
 }

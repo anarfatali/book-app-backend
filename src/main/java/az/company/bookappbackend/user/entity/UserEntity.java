@@ -7,7 +7,7 @@ import az.company.bookappbackend.common.enums.ReadingFrequency;
 import az.company.bookappbackend.common.enums.SubscriptionType;
 import az.company.bookappbackend.exchange.entity.ExchangeEntryEntity;
 import az.company.bookappbackend.exchange.entity.ExchangeRequestEntity;
-import az.company.bookappbackend.library.entity.LibraryEntryEntity;
+import az.company.bookappbackend.library.entity.LibraryEntity;
 import az.company.bookappbackend.library.entity.WishlistItemEntity;
 import az.company.bookappbackend.notification.entity.NotificationEntity;
 import az.company.bookappbackend.review.entity.ReviewEntity;
@@ -141,41 +141,41 @@ public class UserEntity implements Serializable {
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<FollowEntity> following = new HashSet<>();//✅
+    private Set<FollowEntity> following = new HashSet<>();
 
     @OneToMany(mappedBy = "followee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<FollowEntity> followers = new HashSet<>(); //✅
+    private Set<FollowEntity> followers = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<LibraryEntryEntity> libraryEntries = new HashSet<>(); //✅
+    private Set<LibraryEntity> libraries = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<WishlistItemEntity> wishlistItems = new HashSet<>(); //✅
+    private Set<WishlistItemEntity> wishlistItems = new HashSet<>();
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<ExchangeEntryEntity> exchangeEntries = new HashSet<>(); //✅
+    private Set<ExchangeEntryEntity> exchangeEntries = new HashSet<>();
 
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<ExchangeRequestEntity> exchangeRequests = new HashSet<>(); //✅
+    private Set<ExchangeRequestEntity> exchangeRequests = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<ReviewEntity> reviews = new HashSet<>(); // ✅
+    private Set<ReviewEntity> reviews = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<AchievementEntity> achievements = new HashSet<>(); //✅
+    private Set<AchievementEntity> achievements = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<NotificationEntity> notifications = new HashSet<>(); // ✅
+    private Set<NotificationEntity> notifications = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<AuditLogEntity> auditLogs = new HashSet<>(); // ✅
+    private Set<AuditLogEntity> auditLogs = new HashSet<>();
 }

@@ -37,7 +37,7 @@ public class EmailVerification implements Serializable {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(name = "otp_hash", nullable = false, length = 255)
+    @Column(name = "otp_hash", nullable = false)
     private String otpHash;
 
     @Column(name = "expires_at", nullable = false)

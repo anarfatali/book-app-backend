@@ -4,6 +4,7 @@ import az.company.bookappbackend.book.entity.BookEntity;
 import az.company.bookappbackend.user.entity.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,9 +12,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
@@ -27,6 +30,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Table(name = "reviews",
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "book_id"}))
+@EqualsAndHashCode(exclude = {"user", "book"})
 public class ReviewEntity implements Serializable {
 
     @Serial
@@ -36,16 +40,17 @@ public class ReviewEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
     private BookEntity book;
 
     @Column(nullable = false)
-    private int rating; // 1–5
+    @Max(5)
+    private Double rating;
 
     @Column(columnDefinition = "TEXT")
     private String text;

@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -25,6 +26,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "achievements")
+@EqualsAndHashCode(exclude = {"user"})
 public class AchievementEntity implements Serializable {
 
     @Serial
@@ -39,10 +41,10 @@ public class AchievementEntity implements Serializable {
     private UserEntity user;
 
     @Column(nullable = false, length = 100)
-    private String type;       // ex. "READ_100_BOOKS"
+    private String type;
 
     @Column
-    private int points;
+    private Integer points;
 
     @Column(name = "earned_at", nullable = false, updatable = false)
     @CreationTimestamp
