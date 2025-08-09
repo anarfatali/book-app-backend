@@ -24,18 +24,17 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
 @Data
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "library_entries",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "book_id"}))
+@Table(name = "library_entries")
 @EqualsAndHashCode(exclude = {"user", "items"})
 public class LibraryEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1983191401347839798L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -28,13 +28,12 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "library_items",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"library_id", "book_id"}))
+@Table(name = "library_items")
 @EqualsAndHashCode(exclude = {"book", "library"})
 public class LibraryItemEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 981318479946316947L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

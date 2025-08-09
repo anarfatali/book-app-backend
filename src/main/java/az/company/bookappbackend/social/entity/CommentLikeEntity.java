@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,15 +27,12 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-        name = "comment_likes",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "comment_id"})
-)
+@Table(name = "comment_likes")
 @EqualsAndHashCode(exclude = {"comment", "user"})
 public class CommentLikeEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1987471890491043818L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -27,13 +27,12 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "likes",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
+@Table(name = "likes")
 @EqualsAndHashCode(exclude = {"user", "post"})
 public class LikeEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1807399131892381723L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

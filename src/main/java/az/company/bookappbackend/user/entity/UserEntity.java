@@ -52,13 +52,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "users")
 @EqualsAndHashCode(exclude = {"posts", "likedPosts", "myComments",
-        "following", "followers", "libraryEntries",
+        "following", "followers", "libraries",
         "wishlistItems", "exchangeEntries", "exchangeRequests",
         "reviews", "achievements", "notifications", "auditLogs"})
 public class UserEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2405172041950251807L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,7 +71,8 @@ public class UserEntity implements Serializable {
     private String password;
 
     @Column(nullable = false)
-    private boolean verified;
+    @Builder.Default
+    private boolean verified = false;
 
     @Column(name = "birthday")
     private LocalDate birthday;
@@ -118,10 +119,12 @@ public class UserEntity implements Serializable {
     private Instant updatedAt;
 
     @Column(name = "notification_preference", nullable = false)
+    @Builder.Default
     private boolean notificationPreference = true;
 
     @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Builder.Default
+    private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

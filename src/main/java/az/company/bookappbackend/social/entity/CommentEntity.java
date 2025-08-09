@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity
 @Data
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +38,7 @@ import java.util.Set;
 public class CommentEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1831941789413909330L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

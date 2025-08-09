@@ -39,7 +39,7 @@ import java.util.Set;
 public class PostEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1239877319029833838L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,7 +69,8 @@ public class PostEntity implements Serializable {
     private String rejectionReason;
 
     @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Builder.Default
+    private boolean isDeleted = false;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

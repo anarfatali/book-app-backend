@@ -25,12 +25,11 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "wishlist_items",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "book_id"}))
+@Table(name = "wishlist_items")
 public class WishlistItemEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7813131391221839382L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

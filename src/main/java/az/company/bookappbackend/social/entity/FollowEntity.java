@@ -26,12 +26,11 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "follows",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "followee_id"}))
+@Table(name = "follows")
 public class FollowEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1481941198487194123L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

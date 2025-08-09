@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,12 +25,11 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "exchange_requests",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"listing_id", "requester_id"}))
+@Table(name = "exchange_requests")
 public class ExchangeRequestEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 9208428482849924424L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

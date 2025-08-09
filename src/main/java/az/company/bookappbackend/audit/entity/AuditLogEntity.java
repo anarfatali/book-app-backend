@@ -31,7 +31,7 @@ import java.time.Instant;
 public class AuditLogEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 9024230424023829292L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

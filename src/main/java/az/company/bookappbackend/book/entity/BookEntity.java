@@ -34,7 +34,7 @@ import java.util.Set;
 public class BookEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1039133941493493223L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

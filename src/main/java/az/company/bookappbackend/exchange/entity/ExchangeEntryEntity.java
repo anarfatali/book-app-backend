@@ -34,7 +34,7 @@ import java.util.Set;
 public class ExchangeEntryEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1984283240249203909L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
