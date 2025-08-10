@@ -8,7 +8,8 @@ import az.company.bookappbackend.common.enums.SubscriptionType;
 import az.company.bookappbackend.exchange.entity.ExchangeEntryEntity;
 import az.company.bookappbackend.exchange.entity.ExchangeRequestEntity;
 import az.company.bookappbackend.library.entity.LibraryEntity;
-import az.company.bookappbackend.library.entity.WishlistItemEntity;
+import az.company.bookappbackend.wishlist.WishlistEntity;
+import az.company.bookappbackend.wishlist.WishlistItemEntity;
 import az.company.bookappbackend.notification.entity.NotificationEntity;
 import az.company.bookappbackend.review.entity.ReviewEntity;
 import az.company.bookappbackend.social.entity.CommentEntity;
@@ -27,6 +28,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +55,7 @@ import java.util.Set;
 @Table(name = "users")
 @EqualsAndHashCode(exclude = {"posts", "likedPosts", "myComments",
         "following", "followers", "libraries",
-        "wishlistItems", "exchangeEntries", "exchangeRequests",
+        "wishlist", "exchangeEntries", "exchangeRequests",
         "reviews", "achievements", "notifications", "auditLogs"})
 public class UserEntity implements Serializable {
 
@@ -154,9 +156,8 @@ public class UserEntity implements Serializable {
     @Builder.Default
     private Set<LibraryEntity> libraries = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private Set<WishlistItemEntity> wishlistItems = new HashSet<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private WishlistEntity wishlist;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

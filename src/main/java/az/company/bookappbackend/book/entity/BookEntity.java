@@ -1,7 +1,7 @@
 package az.company.bookappbackend.book.entity;
 
 import az.company.bookappbackend.exchange.entity.ExchangeEntryEntity;
-import az.company.bookappbackend.library.entity.WishlistItemEntity;
+import az.company.bookappbackend.wishlist.WishlistItemEntity;
 import az.company.bookappbackend.review.entity.ReviewEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
