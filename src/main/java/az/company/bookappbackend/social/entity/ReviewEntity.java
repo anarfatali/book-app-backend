@@ -1,15 +1,20 @@
-package az.company.bookappbackend.review.entity;
+package az.company.bookappbackend.social.entity;
 
 import az.company.bookappbackend.book.entity.BookEntity;
+import az.company.bookappbackend.common.enums.PostStatus;
 import az.company.bookappbackend.user.entity.UserEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
@@ -23,6 +28,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -30,7 +37,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "reviews")
-@EqualsAndHashCode(exclude = {"user", "book"})
+@EqualsAndHashCode(exclude = {"user", "book", "likes", "comments"})
 public class ReviewEntity implements Serializable {
 
     @Serial
@@ -49,10 +56,18 @@ public class ReviewEntity implements Serializable {
     private BookEntity book;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PostStatus status;
+
+    @Column(name = "is_deleted")
+    @Builder.Default
+    private boolean isDeleted = false;
+
+    @Column(nullable = false)
     @Max(5)
     private Double rating;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", length = 5000)
     private String text;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -62,4 +77,12 @@ public class ReviewEntity implements Serializable {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Instant updatedAt;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<LikeEntity> likes = new HashSet<>();
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<CommentEntity> comments = new HashSet<>();
 }
