@@ -5,7 +5,7 @@ import az.company.bookappbackend.audit.entity.AuditLogEntity;
 import az.company.bookappbackend.common.enums.Interests;
 import az.company.bookappbackend.common.enums.ReadingFrequency;
 import az.company.bookappbackend.common.enums.SubscriptionType;
-import az.company.bookappbackend.exchange.entity.ExchangeEntryEntity;
+import az.company.bookappbackend.exchange.entity.ExchangeOfferEntity;
 import az.company.bookappbackend.exchange.entity.ExchangeRequestEntity;
 import az.company.bookappbackend.library.entity.LibraryEntity;
 import az.company.bookappbackend.notification.entity.NotificationEntity;
@@ -54,7 +54,7 @@ import java.util.Set;
 @Table(name = "users")
 @EqualsAndHashCode(exclude = {"posts", "likedPosts", "myComments",
         "following", "followers", "libraries",
-        "wishlist", "exchangeEntries", "exchangeRequests",
+        "wishlist", "exchangeOffers", "exchangeRequests",
         "reviews", "achievements", "notifications", "auditLogs"})
 public class UserEntity implements Serializable {
 
@@ -160,7 +160,7 @@ public class UserEntity implements Serializable {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<ExchangeEntryEntity> exchangeEntries = new HashSet<>();
+    private Set<ExchangeOfferEntity> exchangeOffers = new HashSet<>();
 
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default

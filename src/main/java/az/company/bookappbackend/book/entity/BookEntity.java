@@ -1,6 +1,6 @@
 package az.company.bookappbackend.book.entity;
 
-import az.company.bookappbackend.exchange.entity.ExchangeEntryEntity;
+import az.company.bookappbackend.exchange.entity.ExchangeOfferEntity;
 import az.company.bookappbackend.social.entity.ReviewEntity;
 import az.company.bookappbackend.wishlist.WishlistItemEntity;
 import jakarta.persistence.CascadeType;
@@ -30,7 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "books")
-@EqualsAndHashCode(exclude = {"exchangeListings", "wishlistItems", "reviews"})
+@EqualsAndHashCode(exclude = {"exchangeOffers", "wishlistItems", "reviews"})
 public class BookEntity implements Serializable {
 
     @Serial
@@ -80,7 +80,7 @@ public class BookEntity implements Serializable {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<ExchangeEntryEntity> exchangeListings = new HashSet<>();
+    private Set<ExchangeOfferEntity> exchangeOffers = new HashSet<>();
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
