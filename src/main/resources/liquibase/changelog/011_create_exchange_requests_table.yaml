@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012_create_exchange_requests_table
+      author: Anar Fataliyev
+      changes:
+        - createTable:
+            tableName: exchange_requests
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: offer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: requester_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: offered_book_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  defaultValue: 'PENDING'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: responded_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: completed_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: exchange_requests
+            baseColumnNames: offer_id
+            referencedTableName: exchange_offers
+            referencedColumnNames: id
+            constraintName: fk_exchange_requests_offer
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: exchange_requests
+            baseColumnNames: requester_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_exchange_requests_requester
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: exchange_requests
+            baseColumnNames: offered_book_id
+            referencedTableName: books
+            referencedColumnNames: id
+            constraintName: fk_exchange_requests_offered_book
+            onDelete: RESTRICT
+        - createIndex:
+            indexName: idx_requests_offer_id
+            tableName: exchange_requests
+            columns:
+              - column:
+                  name: offer_id
+        - createIndex:
+            indexName: idx_requests_requester_id
+            tableName: exchange_requests
+            columns:
+              - column:
+                  name: requester_id
+
+        - createIndex:
+            indexName: idx_requests_created_at
+            tableName: exchange_requests
+            columns:
+              - column:
+                  name: created_at

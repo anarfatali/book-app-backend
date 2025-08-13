@@ -30,7 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
-        name = "library_entries",
+        name = "libraries",
         indexes = {
                 @Index(name = "idx_library_user_id", columnList = "user_id")
         }

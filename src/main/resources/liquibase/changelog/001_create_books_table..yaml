@@ -1,0 +1,88 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001_create_books_table
+      author: Anar Fataliyev
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: page_count
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: publisher
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: publish_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: isbn
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: language
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ratings
+                  type: INT
+                  defaultValueNumeric: 0
+              - column:
+                  name: avg_score
+                  type: DOUBLE
+                  defaultValueNumeric: 0.0
+              - column:
+                  name: cover_image_url
+                  type: VARCHAR(255)
+        - createIndex:
+            tableName: books
+            indexName: idx_books_author
+            columns:
+              - column:
+                  name: author
+        - createIndex:
+            tableName: books
+            indexName: idx_books_category
+            columns:
+              - column:
+                  name: category
+        - createIndex:
+            tableName: books
+            indexName: idx_books_publish_date
+            columns:
+              - column:
+                  name: publish_date

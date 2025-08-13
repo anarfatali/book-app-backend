@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009_create_wishlist_items_table
+      author: Anar Fataliyev
+      changes:
+        - createTable:
+            tableName: wishlist_items
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: wishlist_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: added_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: wishlist_items
+            baseColumnNames: wishlist_id
+            referencedTableName: wishlist
+            referencedColumnNames: id
+            constraintName: fk_wishlistitem_wishlist
+        - addForeignKeyConstraint:
+            baseTableName: wishlist_items
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_wishlistitem_user
+        - addForeignKeyConstraint:
+            baseTableName: wishlist_items
+            baseColumnNames: book_id
+            referencedTableName: books
+            referencedColumnNames: id
+            constraintName: fk_wishlistitem_book
+        - createIndex:
+            indexName: idx_wishlist_user
+            tableName: wishlist_items
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_wishlist_list
+            tableName: wishlist_items
+            columns:
+              - column:
+                  name: wishlist_id
+        - createIndex:
+            indexName: idx_wishlist_book
+            tableName: wishlist_items
+            columns:
+              - column:
+                  name: book_id
