@@ -32,10 +32,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "wishlists", indexes = {
-        @Index(columnList = "user_id"),
-        @Index(columnList = "name")
-})
+@Table(
+        name = "wishlists",
+        indexes = {
+                @Index(columnList = "user_id"),
+                @Index(columnList = "name")
+        }
+)
 @EqualsAndHashCode(exclude = {"user", "items"})
 public class WishlistEntity implements Serializable {
 

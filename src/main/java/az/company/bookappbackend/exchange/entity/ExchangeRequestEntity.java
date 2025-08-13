@@ -11,6 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -31,7 +32,14 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "exchange_requests")
+@Table(
+        name = "exchange_requests",
+        indexes = {
+                @Index(name = "idx_requests_offer_id", columnList = "offer_id"),
+                @Index(name = "idx_requests_requester_id", columnList = "requester_id"),
+                @Index(name = "idx_requests_created_at", columnList = "created_at")
+        }
+)
 @EqualsAndHashCode(exclude = {"offer", "requester", "offeredBook"})
 public class ExchangeRequestEntity implements Serializable {
 

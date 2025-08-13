@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,14 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "books")
+@Table(
+        name = "books",
+        indexes = {
+                @Index(name = "idx_books_author", columnList = "author"),
+                @Index(name = "idx_books_category", columnList = "category"),
+                @Index(name = "idx_books_publish_date", columnList = "publish_date")
+        }
+)
 @EqualsAndHashCode(exclude = {"exchangeOffers", "wishlistItems", "reviews"})
 public class BookEntity implements Serializable {
 

@@ -7,6 +7,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -27,7 +28,13 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "comment_likes")
+@Table(
+        name = "comment_likes",
+        indexes = {
+                @Index(name = "idx_comment_likes_comment_id", columnList = "comment_id"),
+                @Index(name = "idx_comment_likes_user_id", columnList = "user_id")
+        }
+)
 @EqualsAndHashCode(exclude = {"comment", "user"})
 public class CommentLikeEntity implements Serializable {
 

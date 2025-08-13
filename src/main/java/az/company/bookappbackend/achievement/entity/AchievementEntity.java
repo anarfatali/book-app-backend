@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -25,7 +26,14 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "achievements")
+@Table(
+        name = "achievements",
+        indexes = {
+                @Index(name = "achievement_user_id_idx", columnList = "user_id"),
+                @Index(name = "achievement_type_idx", columnList = "type"),
+                @Index(name = "achievement_earned_at_idx", columnList = "earned_at")
+        }
+)
 @EqualsAndHashCode(exclude = {"user"})
 public class AchievementEntity implements Serializable {
 
