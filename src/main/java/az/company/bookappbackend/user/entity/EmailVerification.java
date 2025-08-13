@@ -36,7 +36,7 @@ public class EmailVerification implements Serializable {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @ManyToOne(optional = false, fetch =  FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
