@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 004_create_users_table
+      id: 002_create_users_table
       author: Anar Fataliyev
       changes:
         - createTable:

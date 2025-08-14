@@ -169,6 +169,7 @@ public class UserEntity implements Serializable {
     private Set<ReviewEntity> likedReviews = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<CommentEntity> myComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

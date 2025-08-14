@@ -78,6 +78,7 @@ public class ExchangeOfferEntity implements Serializable {
     @ElementCollection
     @Column(name = "url", length = 1000)
     @CollectionTable(name = "offer_photo_urls", joinColumns = @JoinColumn(name = "offer_id"))
+    @Builder.Default
     private List<String> photoUrls = new ArrayList<>();
 
     @Column(name = "is_approved")

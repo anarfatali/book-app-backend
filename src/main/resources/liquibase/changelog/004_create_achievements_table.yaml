@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 002_create_achievements_table
+      id: 04_create_achievements_table
       author: Anar Fataliyev
       changes:
         - createTable:

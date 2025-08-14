@@ -44,7 +44,7 @@ import java.util.Set;
                 @Index(name = "idx_posts_status", columnList = "status")
         }
 )
-@EqualsAndHashCode(exclude = {"likes", "comments", "likedBy", "savedBy"})
+@EqualsAndHashCode(exclude = {"likes", "comments", "likedByUsers", "savedByUsers"})
 public class PostEntity implements Serializable {
 
     @Serial
