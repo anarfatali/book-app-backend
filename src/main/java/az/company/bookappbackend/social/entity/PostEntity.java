@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -43,7 +44,7 @@ import java.util.Set;
                 @Index(name = "idx_posts_status", columnList = "status")
         }
 )
-@EqualsAndHashCode(exclude = {"likes", "comments"})
+@EqualsAndHashCode(exclude = {"likes", "comments", "likedBy", "savedBy"})
 public class PostEntity implements Serializable {
 
     @Serial
@@ -95,4 +96,12 @@ public class PostEntity implements Serializable {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<CommentEntity> comments = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likedPosts", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserEntity> likedBy = new HashSet<>();
+
+    @ManyToMany(mappedBy = "savedPosts", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserEntity> savedBy = new HashSet<>();
 }

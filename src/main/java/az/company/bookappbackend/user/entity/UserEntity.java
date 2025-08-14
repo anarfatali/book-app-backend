@@ -52,8 +52,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-@EqualsAndHashCode(exclude = {"posts", "likedPosts", "myComments",
-        "following", "followers", "libraries",
+@EqualsAndHashCode(exclude = {"posts", "likedPosts", "savedPosts",
+        "myComments", "following", "followers", "libraries",
         "wishlist", "exchangeOffers", "exchangeRequests",
         "reviews", "achievements", "notifications", "auditLogs"})
 public class UserEntity implements Serializable {
@@ -139,6 +139,15 @@ public class UserEntity implements Serializable {
     )
     @Builder.Default
     private Set<PostEntity> likedPosts = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "saved_posts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    @Builder.Default
+    private Set<PostEntity> savedPosts = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CommentEntity> myComments = new ArrayList<>();
