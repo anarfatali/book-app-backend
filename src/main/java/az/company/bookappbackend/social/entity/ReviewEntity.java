@@ -1,5 +1,6 @@
 package az.company.bookappbackend.social.entity;
 
+import az.company.bookappbackend.book.entity.BookEntity;
 import az.company.bookappbackend.common.enums.PostStatus;
 import az.company.bookappbackend.user.entity.UserEntity;
 import jakarta.persistence.CascadeType;
@@ -17,6 +18,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,18 +39,18 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
-        name = "posts",
+        name = "reviews",
         indexes = {
-                @Index(name = "idx_posts_user_id", columnList = "user_id"),
-                @Index(name = "idx_posts_created_at", columnList = "created_at"),
-                @Index(name = "idx_posts_status", columnList = "status")
+                @Index(name = "idx_reviews_user_id", columnList = "user_id"),
+                @Index(name = "idx_reviews_book_id", columnList = "book_id"),
+                @Index(name = "idx_reviews_book_rating", columnList = "book_id, rating"),
         }
 )
-@EqualsAndHashCode(exclude = {"likes", "comments", "likedByUsers", "savedByUsers"})
-public class PostEntity implements Serializable {
+@EqualsAndHashCode(exclude = {"user", "book", "likes", "comments"})
+public class ReviewEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1239877319029833838L;
+    private static final long serialVersionUID = 1287173127317382313L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,28 +60,24 @@ public class PostEntity implements Serializable {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(name = "image_url", nullable = false, length = 500)
-    private String imageUrl;
-
-    @Column(length = 1000)
-    private String caption;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private BookEntity book;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PostStatus status;
 
-    @Column(name = "approved_at")
-    private Instant approvedAt;
-
-    @Column(name = "rejected_at")
-    private Instant rejectedAt;
-
-    @Column(name = "rejection_reason", length = 500)
-    private String rejectionReason;
-
     @Column(name = "is_deleted")
     @Builder.Default
     private boolean isDeleted = false;
+
+    @Column(nullable = false)
+    @Max(5)
+    private Double rating;
+
+    @Column(columnDefinition = "TEXT", length = 5000)
+    private String text;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
@@ -89,19 +87,19 @@ public class PostEntity implements Serializable {
     @UpdateTimestamp
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<LikeEntity> likes = new HashSet<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<CommentEntity> comments = new HashSet<>();
 
-    @ManyToMany(mappedBy = "likedPosts", fetch = FetchType.LAZY)
-    @Builder.Default
-    private Set<UserEntity> likedByUsers = new HashSet<>();
-
-    @ManyToMany(mappedBy = "savedPosts", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "savedReviews", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<UserEntity> savedByUsers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likedReviews", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserEntity> likedByUsers = new HashSet<>();
 }

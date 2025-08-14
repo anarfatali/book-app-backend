@@ -4,11 +4,16 @@ spring:
   jpa:
     show_sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
+  liquibase:
+    change-log: classpath:liquibase/changelog-master.yaml
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: 1234
+  data:
+    mongodb:
+      uri: mongodb://mongo:1234@localhost:27017/bookapp?authSource=admin

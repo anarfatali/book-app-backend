@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016_create_reviews_table
+      author: Anar Fataliyev
+      changes:
+        - createTable:
+            tableName: reviews
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: rating
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: reviews
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_reviews_user
+        - addForeignKeyConstraint:
+            baseTableName: reviews
+            baseColumnNames: book_id
+            referencedTableName: books
+            referencedColumnNames: id
+            constraintName: fk_reviews_book
+        - createIndex:
+            indexName: idx_reviews_user_id
+            tableName: reviews
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_reviews_book_id
+            tableName: reviews
+            columns:
+              - column:
+                  name: book_id
+        - createIndex:
+            indexName: idx_reviews_book_rating
+            tableName: reviews
+            columns:
+              - column:
+                  name: book_id
+              - column:
+                  name: rating
