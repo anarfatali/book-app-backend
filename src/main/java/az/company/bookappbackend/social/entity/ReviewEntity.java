@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -93,4 +94,12 @@ public class ReviewEntity implements Serializable {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<CommentEntity> comments = new HashSet<>();
+
+    @ManyToMany(mappedBy = "savedReviews", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserEntity> savedByUsers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likedReviews", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserEntity> likedByUsers = new HashSet<>();
 }

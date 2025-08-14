@@ -99,9 +99,9 @@ public class PostEntity implements Serializable {
 
     @ManyToMany(mappedBy = "likedPosts", fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<UserEntity> likedBy = new HashSet<>();
+    private Set<UserEntity> likedByUsers = new HashSet<>();
 
     @ManyToMany(mappedBy = "savedPosts", fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<UserEntity> savedBy = new HashSet<>();
+    private Set<UserEntity> savedByUsers = new HashSet<>();
 }

@@ -149,6 +149,25 @@ public class UserEntity implements Serializable {
     @Builder.Default
     private Set<PostEntity> savedPosts = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "saved_reviews",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
+    @Builder.Default
+    private Set<ReviewEntity> savedReviews = new HashSet<>();
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "liked_reviews",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
+    @Builder.Default
+    private Set<ReviewEntity> likedReviews = new HashSet<>();
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CommentEntity> myComments = new ArrayList<>();
 
