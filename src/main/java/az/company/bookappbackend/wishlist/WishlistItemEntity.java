@@ -36,7 +36,7 @@ import java.time.Instant;
                 @Index(name = "idx_wishlist_book", columnList = "book_id")
         }
 )
-@EqualsAndHashCode(exclude = {"wishlist", "user", "book"})
+@EqualsAndHashCode(exclude = {"user", "book"})
 public class WishlistItemEntity implements Serializable {
 
     @Serial

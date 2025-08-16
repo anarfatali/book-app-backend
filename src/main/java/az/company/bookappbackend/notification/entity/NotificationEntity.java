@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -34,7 +33,6 @@ import java.time.Instant;
                 @Index(name = "idx_notifications_created_at", columnList = "created_at")
         }
 )
-@EqualsAndHashCode(exclude = {"user"})
 public class NotificationEntity implements Serializable {
 
     @Serial

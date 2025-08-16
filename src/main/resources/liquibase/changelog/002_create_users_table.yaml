@@ -20,15 +20,10 @@ databaseChangeLog:
                     nullable: false
                     unique: true
               - column:
-                  name: password_hash
+                  name: password
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-              - column:
-                 name: role
-                 type: VARCHAR(50)
-                 constraints:
-                   nullable: false
               - column:
                   name: verified
                   type: BOOLEAN

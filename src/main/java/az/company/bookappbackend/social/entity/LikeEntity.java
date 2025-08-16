@@ -35,7 +35,7 @@ import java.time.Instant;
                 @Index(name = "idx_likes_created_at", columnList = "created_at")
         }
 )
-@EqualsAndHashCode(exclude = {"user", "post", "review"})
+@EqualsAndHashCode(exclude = {"user", "post"})
 public class LikeEntity implements Serializable {
 
     @Serial
