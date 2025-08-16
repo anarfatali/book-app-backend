@@ -44,7 +44,7 @@ import java.util.Set;
                 @Index(name = "idx_posts_status", columnList = "status")
         }
 )
-@EqualsAndHashCode(exclude = {"likes", "comments", "likedByUsers", "savedByUsers"})
+@EqualsAndHashCode(exclude = {"user", "likes", "comments", "likedByUsers", "savedByUsers"})
 public class PostEntity implements Serializable {
 
     @Serial
@@ -104,4 +104,8 @@ public class PostEntity implements Serializable {
     @ManyToMany(mappedBy = "savedPosts", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<UserEntity> savedByUsers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "archivedPosts", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserEntity> archivedBy = new HashSet<>();
 }

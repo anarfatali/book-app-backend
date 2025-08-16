@@ -4,6 +4,7 @@ import az.company.bookappbackend.achievement.entity.AchievementEntity;
 import az.company.bookappbackend.audit.entity.AuditLogEntity;
 import az.company.bookappbackend.common.enums.Interests;
 import az.company.bookappbackend.common.enums.ReadingFrequency;
+import az.company.bookappbackend.common.enums.Role;
 import az.company.bookappbackend.common.enums.SubscriptionType;
 import az.company.bookappbackend.exchange.entity.ExchangeOfferEntity;
 import az.company.bookappbackend.exchange.entity.ExchangeRequestEntity;
@@ -68,8 +69,12 @@ public class UserEntity implements Serializable {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(nullable = false)
     @Builder.Default
@@ -158,6 +163,14 @@ public class UserEntity implements Serializable {
     @Builder.Default
     private Set<ReviewEntity> savedReviews = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "archived_posts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name =  "post_id")
+    )
+    @Builder.Default
+    private Set<PostEntity> archivedPosts = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
