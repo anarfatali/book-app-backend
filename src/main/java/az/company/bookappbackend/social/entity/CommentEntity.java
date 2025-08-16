@@ -42,7 +42,7 @@ import java.util.Set;
                 @Index(name = "idx_comments_created_at", columnList = "created_at")
         }
 )
-@EqualsAndHashCode(exclude = {"user", "post", "replies", "likes"})
+@EqualsAndHashCode(exclude = {"user", "post", "review", "parent", "replies", "likes"})
 public class CommentEntity implements Serializable {
 
     @Serial

@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 023_create_archived_posts_table
+      author: Anar Fataliyev
+      changes:
+        - createTable:
+            tableName: archived_posts
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: archived_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: archived_posts
+            columnNames: user_id,post_id
+            constraintName: pk_archived_posts
+        - addForeignKeyConstraint:
+            baseTableName: archived_posts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_archivedposts_user
+        - addForeignKeyConstraint:
+            baseTableName: archived_posts
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: fk_archivedposts_post
+        - createIndex:
+            tableName: archived_posts
+            indexName: idx_archived_user_active
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: active

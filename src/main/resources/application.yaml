@@ -17,3 +17,8 @@ spring:
   data:
     mongodb:
       uri: mongodb://mongo:1234@localhost:27017/bookapp?authSource=admin
+  security:
+    jwt:
+      secret: secret
+      expiration-minutes: 15
+      refresh-expiration-days: 7
