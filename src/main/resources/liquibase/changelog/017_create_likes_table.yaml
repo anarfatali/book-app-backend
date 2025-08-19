@@ -31,13 +31,13 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: likes
             baseColumnNames: user_id
-            referencedTableName: user
+            referencedTableName: users
             referencedColumnNames: id
             constraintName: fk_likes_user
         - addForeignKeyConstraint:
             baseTableName: likes
             baseColumnNames: post_id
-            referencedTableName: post
+            referencedTableName: posts
             referencedColumnNames: id
             constraintName: fk_likes_post
         - createIndex:
