@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 021_create_saved_posts_table
+      id: 020_create_liked_posts_table
       author: Anar Fataliyev
       changes:
         - createTable:
-            tableName: saved_posts
+            tableName: liked_posts
             columns:
               - column:
                   name: user_id
@@ -23,30 +23,30 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
-            baseTableName: saved_posts
+            baseTableName: liked_posts
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_saved_posts_user
+            constraintName: fk_liked_posts_user
             onDelete: CASCADE
         - addForeignKeyConstraint:
-            baseTableName: saved_posts
+            baseTableName: liked_posts
             baseColumnNames: post_id
             referencedTableName: posts
             referencedColumnNames: id
-            constraintName: fk_saved_posts_post
+            constraintName: fk_liked_posts_post
             onDelete: CASCADE
         - createIndex:
-            indexName: idx_saved_posts_user_id
-            tableName: saved_posts
+            indexName: idx_liked_posts_user_id
+            tableName: liked_posts
             columns:
               - column: { name: user_id }
         - createIndex:
-            indexName: idx_saved_posts_post_id
-            tableName: saved_posts
+            indexName: idx_liked_posts_post_id
+            tableName: liked_posts
             columns:
               - column: { name: post_id }
         - addUniqueConstraint:
-            constraintName: uq_saved_posts_user_post
-            tableName: saved_posts
+            constraintName: uq_liked_posts_user_post
+            tableName: liked_posts
             columnNames: user_id, post_id

@@ -138,7 +138,7 @@ public class UserEntity implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "post_likes",
+            name = "liked_posts",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id")
     )
@@ -153,15 +153,6 @@ public class UserEntity implements Serializable {
     )
     @Builder.Default
     private Set<PostEntity> savedPosts = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "saved_reviews",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "review_id")
-    )
-    @Builder.Default
-    private Set<ReviewEntity> savedReviews = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -180,6 +171,15 @@ public class UserEntity implements Serializable {
     )
     @Builder.Default
     private Set<ReviewEntity> likedReviews = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "saved_reviews",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "review_id")
+    )
+    @Builder.Default
+    private Set<ReviewEntity> savedReviews = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
