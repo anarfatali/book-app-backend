@@ -1,18 +1,11 @@
 databaseChangeLog:
   - changeSet:
-      id: 017_create_likes_table
+      id: 023_create_archived_posts_table
       author: Anar Fataliyev
       changes:
         - createTable:
-            tableName: likes
+            tableName: archived_posts
             columns:
-              - column:
-                  name: id
-                  type: BIGINT
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
               - column:
                   name: user_id
                   type: BIGINT
@@ -24,37 +17,38 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: created_at
-                  type: TIMESTAMP
+                  name: archived_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: archived_posts
+            columnNames: user_id,post_id
+            constraintName: pk_archived_posts
         - addForeignKeyConstraint:
-            baseTableName: likes
+            baseTableName: archived_posts
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_likes_user
+            constraintName: fk_archivedposts_user
         - addForeignKeyConstraint:
-            baseTableName: likes
+            baseTableName: archived_posts
             baseColumnNames: post_id
             referencedTableName: posts
             referencedColumnNames: id
-            constraintName: fk_likes_post
+            constraintName: fk_archivedposts_post
         - createIndex:
-            indexName: idx_likes_post_id
-            tableName: likes
-            columns:
-              - column:
-                  name: post_id
-        - createIndex:
-            indexName: idx_likes_user_id
-            tableName: likes
+            tableName: archived_posts
+            indexName: idx_archived_user_active
             columns:
               - column:
                   name: user_id
-        - createIndex:
-            indexName: idx_likes_created_at
-            tableName: likes
-            columns:
               - column:
-                  name: created_at
+                  name: active

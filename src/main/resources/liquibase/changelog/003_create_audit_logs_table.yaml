@@ -44,7 +44,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: audit_logs
             baseColumnNames: user_id
-            referencedTableName: user_entity
+            referencedTableName: users
             referencedColumnNames: id
             constraintName: fk_audit_logs_user_id
         - createIndex:

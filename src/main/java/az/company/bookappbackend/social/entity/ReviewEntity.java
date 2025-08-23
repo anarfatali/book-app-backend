@@ -46,7 +46,7 @@ import java.util.Set;
                 @Index(name = "idx_reviews_book_rating", columnList = "book_id, rating"),
         }
 )
-@EqualsAndHashCode(exclude = {"user", "book", "likes", "comments"})
+@EqualsAndHashCode(exclude = {"user", "book", "likes", "comments", "savedByUsers", "likedByUsers"})
 public class ReviewEntity implements Serializable {
 
     @Serial

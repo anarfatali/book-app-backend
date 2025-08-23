@@ -36,7 +36,7 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: wishlist_items
             baseColumnNames: wishlist_id
-            referencedTableName: wishlist
+            referencedTableName: wishlists
             referencedColumnNames: id
             constraintName: fk_wishlistitem_wishlist
         - addForeignKeyConstraint:

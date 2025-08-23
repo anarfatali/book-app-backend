@@ -31,13 +31,13 @@ databaseChangeLog:
         - addForeignKeyConstraint:
             baseTableName: library_items
             baseColumnNames: library_id
-            referencedTableName: library
+            referencedTableName: libraries
             referencedColumnNames: id
             constraintName: fk_library_items_library_id
         - addForeignKeyConstraint:
             baseTableName: library_items
             baseColumnNames: book_id
-            referencedTableName: book
+            referencedTableName: books
             referencedColumnNames: id
             constraintName: fk_library_items_book_id
         - createIndex:

@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 022_create_review_likes_table
+      id: 022_create_liked_reviews_table
       author: Anar Fataliyev
       changes:
         - createTable:
-            tableName: review_likes
+            tableName: liked_reviews
             columns:
               - column:
                   name: user_id
@@ -23,30 +23,30 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
-            baseTableName: review_likes
+            baseTableName: liked_reviews
             baseColumnNames: user_id
             referencedTableName: users
             referencedColumnNames: id
-            constraintName: fk_review_likes_user
+            constraintName: fk_liked_reviews_user
             onDelete: CASCADE
         - addForeignKeyConstraint:
-            baseTableName: review_likes
+            baseTableName: liked_reviews
             baseColumnNames: review_id
             referencedTableName: reviews
             referencedColumnNames: id
-            constraintName: fk_review_likes_review
+            constraintName: fk_liked_reviews_review
             onDelete: CASCADE
         - createIndex:
-            indexName: idx_review_likes_user_id
-            tableName: review_likes
+            indexName: idx_liked_reviews_user_id
+            tableName: liked_reviews
             columns:
               - column: { name: user_id }
         - createIndex:
-            indexName: idx_review_likes_review_id
-            tableName: review_likes
+            indexName: idx_liked_reviews_review_id
+            tableName: liked_reviews
             columns:
               - column: { name: review_id }
         - addUniqueConstraint:
-            constraintName: uq_review_likes_user_review
-            tableName: review_likes
+            constraintName: uq_liked_reviews_user_review
+            tableName: liked_reviews
             columnNames: user_id, review_id
