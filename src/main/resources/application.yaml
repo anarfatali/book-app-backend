@@ -43,7 +43,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: anarftliyev@gmail.com
-    password: fvgi gbyu dnsl byjb
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:

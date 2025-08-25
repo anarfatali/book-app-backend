@@ -46,7 +46,6 @@ public class AuthService {
     private final SecureRandom secureRandom = new SecureRandom();
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final EmailService emailService;
