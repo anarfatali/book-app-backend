@@ -54,7 +54,7 @@ public class JwtService {
 
         return Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim("uid", user.getId())
+                .claim("roles", user.getRole().name())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -67,7 +67,7 @@ public class JwtService {
 
         return Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim("uid", user.getId())
+                .claim("roles", user.getRole().name())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

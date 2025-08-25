@@ -60,7 +60,7 @@ public class CommentEntity implements Serializable {
     @JoinColumn(name = "post_id", nullable = false)
     private PostEntity post;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", nullable = false)
     private ReviewEntity review;
 

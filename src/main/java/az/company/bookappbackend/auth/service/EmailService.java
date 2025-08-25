@@ -44,7 +44,6 @@ public class EmailService {
             helper.setText(htmlContent, true);
 
             mailSender.send(message);
-            log.info("Verification email sent to: {}", user.getEmail());
         } catch (Exception e) {
             log.error("Failed to send verification email to: {}", user.getEmail(), e);
             throw new EmailSendException("Email send failed");
