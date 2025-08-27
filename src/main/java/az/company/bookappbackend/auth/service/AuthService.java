@@ -1,6 +1,7 @@
 package az.company.bookappbackend.auth.service;
 
 import az.company.bookappbackend.auth.dto.request.LoginRequest;
+import az.company.bookappbackend.auth.dto.request.LogoutRequest;
 import az.company.bookappbackend.auth.dto.request.RefreshTokenRequest;
 import az.company.bookappbackend.auth.dto.request.RegisterRequest;
 import az.company.bookappbackend.auth.dto.request.ResendVerificationRequest;
@@ -91,8 +92,7 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
+        var user = findUserByEmailOrUsername(request.getEmail());
 
         try {
             authenticationManager.authenticate(
@@ -206,13 +206,19 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(String refreshTokenValue) {
-        RefreshToken refreshToken = refreshTokenRepository.findByTokenHashAndRevokedFalse(refreshTokenValue)
+    public void logout(LogoutRequest request) {
+        RefreshToken refreshToken = refreshTokenRepository.findByTokenHashAndRevokedFalse(request.getRefreshToken())
                 .orElseThrow(() -> new InvalidTokenException("Invalid refresh token"));
 
         refreshToken.setRevoked(true);
         refreshTokenRepository.save(refreshToken);
         log.info("AuthService::logout Refresh token revoked for user: {}", refreshToken.getUser().getEmail());
+    }
+
+    private UserEntity findUserByEmailOrUsername(String emailOrUsername) {
+        return userRepository.findByEmail(emailOrUsername)
+                .orElseGet(() -> userRepository.findByUsername(emailOrUsername)
+                        .orElseThrow(() -> new UserNotFoundException("User not found: " + emailOrUsername)));
     }
 
     private void saveRefreshToken(UserEntity user, String refreshToken) {
