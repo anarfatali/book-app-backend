@@ -4,14 +4,14 @@ spring:
   jpa:
     show_sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
-  liquibase:
-    change-log: classpath:liquibase/changelog-master.yaml
+#  liquibase:
+#    change-log: classpath:liquibase/changelog-master.yaml
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/book-app-backend
     username: postgres
     password: 1234
   data:
@@ -22,3 +22,11 @@ spring:
       secret: secret
       expiration-minutes: 15
       refresh-expiration-days: 7
+
+minio:
+  url: http://localhost:9000
+  default-buckets: profile-photos
+  access:
+    name: "minioadmin"
+    secret: "minioadmin"
+    chunkSize: 10485760

@@ -1,6 +1,6 @@
-package az.company.bookappbackend.user.dto;
+package az.company.bookappbackend.user.dto.response;
 
-import az.company.bookappbackend.common.enums.Interests;
+import az.company.bookappbackend.common.enums.Interest;
 import az.company.bookappbackend.common.enums.ReadingFrequency;
 import az.company.bookappbackend.common.enums.SubscriptionType;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class UserProfileDto {
     private String avatarUrl;
     private String bio;
     private String readingExperience;
-    private Interests interests;
+    private Interest interests;
     private SubscriptionType subscriptionType;
     private ReadingFrequency readingFrequency;
     private boolean isPrivate;

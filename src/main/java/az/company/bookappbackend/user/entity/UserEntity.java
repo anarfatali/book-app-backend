@@ -2,7 +2,7 @@ package az.company.bookappbackend.user.entity;
 
 import az.company.bookappbackend.achievement.entity.AchievementEntity;
 import az.company.bookappbackend.audit.entity.AuditLogEntity;
-import az.company.bookappbackend.common.enums.Interests;
+import az.company.bookappbackend.common.enums.Interest;
 import az.company.bookappbackend.common.enums.ReadingFrequency;
 import az.company.bookappbackend.common.enums.Role;
 import az.company.bookappbackend.common.enums.SubscriptionType;
@@ -16,7 +16,9 @@ import az.company.bookappbackend.social.entity.PostEntity;
 import az.company.bookappbackend.social.entity.ReviewEntity;
 import az.company.bookappbackend.wishlist.WishlistEntity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -72,25 +74,19 @@ public class UserEntity implements Serializable {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Column(length = 100, nullable = false, unique = true)
+    private String username;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(nullable = false)
+    @Column(name = "is_verified", nullable = false)
     @Builder.Default
-    private boolean verified = false;
+    private boolean isVerified = false;
 
-    @Column(name = "birthday")
+    @Column(name = "birthday", nullable = false)
     private LocalDate birthday;
-
-    @Column(length = 100, nullable = false)
-    private String name;
-
-    @Column(length = 100, nullable = false, unique = true)
-    private String username;
-
-    @Column(length = 100, nullable = false)
-    private String surname;
 
     @Column(name = "subscription_type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -103,18 +99,38 @@ public class UserEntity implements Serializable {
     @Column(name = "avatar_url", length = 500)
     private String avatarUrl;
 
-    @Column(length = 500)
+    @Column(name = "bio", length = 250)
     private String bio;
 
     @Column(name = "reading_experience", length = 100)
     private String readingExperience;
 
-    @Column(length = 200)
+    @ElementCollection(targetClass = Interest.class)
+    @CollectionTable(name = "user_interests", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(length = 50)
     @Enumerated(EnumType.STRING)
-    private Interests interests;
+    @Builder.Default
+    private Set<Interest> interests = new HashSet<>();
 
-    @Column(name = "is_private", nullable = false)
-    private boolean isPrivate;
+    @Column(name = "is_public", nullable = false)
+    @Builder.Default
+    private boolean isPublic = true;
+
+    @Column(name = "is_deleted")
+    @Builder.Default
+    private boolean isDeleted = false;
+
+    // Helper method
+    public void replaceInterests(Set<Interest> newInterests) {
+        this.interests.clear();
+        this.interests.addAll(newInterests);
+    }
+
+// ------------------------- Till here -------------------------
+
+    @Column(name = "notification_preference", nullable = false)
+    @Builder.Default
+    private boolean notificationPreference = true;
 
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
@@ -123,14 +139,6 @@ public class UserEntity implements Serializable {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Instant updatedAt;
-
-    @Column(name = "notification_preference", nullable = false)
-    @Builder.Default
-    private boolean notificationPreference = true;
-
-    @Column(name = "is_deleted")
-    @Builder.Default
-    private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
@@ -193,6 +201,7 @@ public class UserEntity implements Serializable {
     @Builder.Default
     private Set<FollowEntity> followers = new HashSet<>();
 
+    // library one to one
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<LibraryEntity> libraries = new HashSet<>();
