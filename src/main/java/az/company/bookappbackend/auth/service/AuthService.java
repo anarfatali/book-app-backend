@@ -92,17 +92,17 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        var user = findUserByEmailOrUsername(request.getEmail());
+        var user = findUserByEmailOrUsername(request.getIdentifier());
 
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
+                            request.getIdentifier(),
                             request.getPassword()
                     )
             );
         } catch (AuthenticationException e) {
-            log.error("AuthService::login Failed to authenticate user: {}", request.getEmail(), e);
+            log.error("AuthService::login Failed to authenticate user: {}", request.getIdentifier(), e);
             throw new BadCredentialsException("Invalid email or password");
         }
 
