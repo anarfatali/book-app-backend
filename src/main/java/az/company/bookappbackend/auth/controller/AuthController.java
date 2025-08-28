@@ -55,14 +55,12 @@ public class AuthController {
 
         AuthResponse authResponse = authService.login(request);
 
-        Cookie refreshTokenCookie = new Cookie("refreshToken", authResponse.getRefreshToken());
+        Cookie refreshTokenCookie = new Cookie("refreshToken", authResponse.refreshToken());
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
         response.addCookie(refreshTokenCookie);
-
-        authResponse.setRefreshToken(null);
 
         return ResponseEntity.ok(authResponse);
     }
@@ -102,22 +100,26 @@ public class AuthController {
             @CookieValue(name = "refreshToken", required = false) String refreshTokenFromCookie,
             @Valid @RequestBody(required = false) RefreshTokenRequest request) {
 
-        String refreshToken = refreshTokenFromCookie;
-        if (refreshToken == null && request != null) {
-            refreshToken = request.getRefreshToken();
-        }
+        String refreshToken = request.refreshToken() != null ? request.refreshToken() : refreshTokenFromCookie;
 
         if (refreshToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(AuthResponse.builder().message("Refresh token not provided").build());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new AuthResponse(
+                            "Token not provided",
+                            null,
+                            null,
+                            "Bearer",
+                            0L,
+                            null
+                    )
+            );
         }
 
-        RefreshTokenRequest tokenRequest = new RefreshTokenRequest();
-        tokenRequest.setRefreshToken(refreshToken);
+        RefreshTokenRequest tokenRequest = new RefreshTokenRequest(
+                refreshToken
+        );
 
         AuthResponse authResponse = authService.refreshToken(tokenRequest);
-        authResponse.setRefreshToken(null);
-        authResponse.setMessage("Token refreshed successfully");
 
         return ResponseEntity.ok(authResponse);
     }
@@ -133,7 +135,7 @@ public class AuthController {
             @Valid @RequestBody(required = false) LogoutRequest request,
             HttpServletResponse response) {
 
-        if (request.getRefreshToken() != null) {
+        if (request.refreshToken() != null) {
             authService.logout(request);
         }
 

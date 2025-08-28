@@ -56,28 +56,28 @@ public class AuthService {
 
     @Transactional
     public void register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            log.error("AuthService::register Email already exists: {}", request.getEmail());
+        if (userRepository.existsByEmail(request.email())) {
+            log.error("AuthService::register Email already exists: {}", request.email());
             throw new AlreadyExistsException("Email already exists");
         }
 
-        if (userRepository.existsByUsername(request.getUsername())) {
-            log.error("AuthService::register Username already exists: {}", request.getUsername());
+        if (userRepository.existsByUsername(request.username())) {
+            log.error("AuthService::register Username already exists: {}", request.username());
             throw new AlreadyExistsException("Username already exists");
         }
 
         var user = UserEntity.builder()
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-                .surname(request.getSurname())
-                .birthday(request.getBirthday())
-                .subscriptionType(request.getSubscriptionType())
-                .readingFrequency(request.getReadingFrequency())
-                .interests(request.getInterests())
-                .bio(request.getBio())
-                .readingExperience(request.getReadingExperience())
+                .email(request.email())
+                .username(request.username())
+                .passwordHash(passwordEncoder.encode(request.password()))
+                .name(request.name())
+                .surname(request.surname())
+                .birthday(request.birthday())
+                .subscriptionType(request.subscriptionType())
+                .readingFrequency(request.readingFrequency())
+                .interests(request.interests())
+                .bio(request.bio())
+                .readingExperience(request.readingExperience())
                 .isPrivate(request.isPrivate())
                 .role(Role.USER)
                 .verified(false)
@@ -92,17 +92,17 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        var user = findUserByEmailOrUsername(request.getIdentifier());
+        var user = findUserByEmailOrUsername(request.identifier());
 
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getIdentifier(),
-                            request.getPassword()
+                            request.identifier(),
+                            request.password()
                     )
             );
         } catch (AuthenticationException e) {
-            log.error("AuthService::login Failed to authenticate user: {}", request.getIdentifier(), e);
+            log.error("AuthService::login Failed to authenticate user: {}", request.identifier(), e);
             throw new BadCredentialsException("Invalid email or password");
         }
 
@@ -121,18 +121,19 @@ public class AuthService {
 
         saveRefreshToken(user, refreshToken);
 
-        return AuthResponse.builder()
-                .message("Login successful")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .expiresIn(15 * 60L)
-                .user(userMapper.toUserDto(user))
-                .build();
+        return new AuthResponse(
+                "Login successful",
+                accessToken,
+                null,
+                "Bearer",
+                15 * 60L,
+                userMapper.toUserDto(user)
+        );
     }
 
     @Transactional
     public void verifyEmail(VerificationRequest request) {
-        UserEntity user = userRepository.findByEmail(request.getEmail())
+        var user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (user.isVerified()) {
@@ -149,7 +150,7 @@ public class AuthService {
             throw new OtpExpiredException("OTP has expired. Please request a new one");
         }
 
-        if (!passwordEncoder.matches(request.getOtp(), verification.getOtpHash())) {
+        if (!passwordEncoder.matches(request.otp(), verification.getOtpHash())) {
             log.error("AuthService::verifyEmail Invalid OTP for user: {}", user.getEmail());
             throw new InvalidOtpException("Invalid OTP");
         }
@@ -166,8 +167,8 @@ public class AuthService {
 
     @Transactional
     public void resendVerification(ResendVerificationRequest request) {
-        UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
+        var user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.email()));
 
         if (user.isVerified()) {
             log.error("AuthService::resendVerification Email already verified for user: {}", user.getEmail());
@@ -182,9 +183,7 @@ public class AuthService {
 
     @Transactional
     public AuthResponse refreshToken(RefreshTokenRequest request) {
-        String refreshTokenValue = request.getRefreshToken();
-
-        RefreshToken refreshToken = refreshTokenRepository.findByTokenHashAndRevokedFalse(refreshTokenValue)
+        var refreshToken = refreshTokenRepository.findByTokenHashAndRevokedFalse(request.refreshToken())
                 .orElseThrow(() -> new InvalidTokenException("Invalid refresh token"));
 
         if (refreshToken.getExpiresAt().isBefore(LocalDateTime.now())) {
@@ -194,20 +193,22 @@ public class AuthService {
             throw new TokenExpiredException("Refresh token expired");
         }
 
-        UserEntity user = refreshToken.getUser();
+        var user = refreshToken.getUser();
         String newAccessToken = jwtService.generateAccessToken(user);
 
-        return AuthResponse.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(refreshTokenValue)
-                .expiresIn(15 * 60L)
-                .user(userMapper.toUserDto(refreshToken.getUser()))
-                .build();
+        return new AuthResponse(
+                "Token refreshed successfully",
+                newAccessToken,
+                null,
+                "Bearer",
+                15 * 60L,
+                userMapper.toUserDto(refreshToken.getUser()
+                ));
     }
 
     @Transactional
     public void logout(LogoutRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findByTokenHashAndRevokedFalse(request.getRefreshToken())
+        var refreshToken = refreshTokenRepository.findByTokenHashAndRevokedFalse(request.refreshToken())
                 .orElseThrow(() -> new InvalidTokenException("Invalid refresh token"));
 
         refreshToken.setRevoked(true);
@@ -224,7 +225,7 @@ public class AuthService {
     private void saveRefreshToken(UserEntity user, String refreshToken) {
         refreshTokenRepository.revokeAllByUser(user);
 
-        RefreshToken token = RefreshToken.builder()
+        var token = RefreshToken.builder()
                 .user(user)
                 .tokenHash(refreshToken)
                 .expiresAt(LocalDateTime.now().plusDays(7))
@@ -237,7 +238,7 @@ public class AuthService {
     private void sendVerificationEmail(UserEntity user) {
         String otp = String.format("%06d", secureRandom.nextInt(1000000));
 
-        EmailVerification verification = EmailVerification.builder()
+        var verification = EmailVerification.builder()
                 .user(user)
                 .otpHash(passwordEncoder.encode(otp))
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
@@ -246,6 +247,6 @@ public class AuthService {
         emailVerificationRepository.save(verification);
 
         emailService.sendVerificationEmail(user, otp);
-        log.info("Verification email sent to: {}", user.getEmail());
+        log.info("AuthService::sendVerificationEmail Verification email sent to: {}", user.getEmail());
     }
 }
