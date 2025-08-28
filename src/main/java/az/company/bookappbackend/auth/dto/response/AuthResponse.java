@@ -1,27 +1,19 @@
 package az.company.bookappbackend.auth.dto.response;
 
 import az.company.bookappbackend.user.dto.UserProfileDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class AuthResponse {
+public record AuthResponse
+        (
+                String message,
 
-    private String message;
+                String accessToken,
 
-    private String accessToken;
+                String refreshToken,
 
-    private String refreshToken;
+                String tokenType,
 
-    @Builder.Default
-    private String tokenType = "Bearer";
+                Long expiresIn,
 
-    private Long expiresIn;
-
-    private UserProfileDto user;
+                UserProfileDto user
+        ) {
 }
