@@ -2,6 +2,7 @@ package az.company.bookappbackend.user.controller;
 
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
+import az.company.bookappbackend.user.dto.response.UpdateUserVisibilityDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UserAvatarResponse;
 import az.company.bookappbackend.user.dto.response.UserProfileResponse;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,13 +66,13 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/profile/visibility")
-    public ResponseEntity<String> updateUserProfileVisibility(
+    public ResponseEntity<UpdateUserVisibilityDto> updateUserProfileVisibility(
             @PathVariable("userId") @NotNull @Min(1) Long userId,
             @RequestParam("isPublic") boolean isPublic
     ) {
         boolean isPublicNow = userService.updateUserVisibility(userId, isPublic);
-        String message = "Profile visibility updated to " + (isPublicNow ? "public" : "private");
-        return ResponseEntity.ok(message);
+
+        return ResponseEntity.ok(new UpdateUserVisibilityDto(isPublicNow));
     }
 
     // Profile picture endpoints
@@ -93,5 +95,11 @@ public class UserController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + avatarUrl + "\"")
                 .contentType(MediaType.parseMediaType(userAvatarResponse.contentType()))
                 .body(new InputStreamResource(userAvatar));
+    }
+
+    @DeleteMapping("/{userId}/avatar")
+    public ResponseEntity<Void> deleteUserAvatar(@PathVariable("userId") @NotNull @Min(1) Long userId) {
+        userService.deleteUserAvatar(userId);
+        return ResponseEntity.noContent().build();
     }
 }

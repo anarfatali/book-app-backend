@@ -1,5 +1,6 @@
 package az.company.bookappbackend.minio.service;
 
+import az.company.bookappbackend.minio.exceptions.FileDeleteException;
 import az.company.bookappbackend.minio.exceptions.FileFetchException;
 import az.company.bookappbackend.minio.exceptions.FileUploadException;
 import az.company.bookappbackend.minio.exceptions.FileValidationException;
@@ -7,6 +8,7 @@ import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,6 @@ public class MinioStorageService {
         String objectName = username + fileExtension;
 
         // The actual file upload to MiniO
-        // This overrides old file if the file exists. Otherwise, creates new
         try (InputStream inputStream = file.getInputStream()) {
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -81,6 +82,18 @@ public class MinioStorageService {
         }
 
         return objectName;
+    }
+
+    public void deleteProfilePhoto(String objectName) {
+        try {
+            minioClient.removeObject(RemoveObjectArgs.builder()
+                    .bucket(BUCKET_NAME)
+                    .object(objectName)
+                    .build());
+        } catch (Exception e) {
+            log.error("Couldn't delete the file. Message: {}", e.getMessage());
+            throw new FileDeleteException(e.getMessage());
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UserAvatarResponse;
 import az.company.bookappbackend.user.dto.response.UserProfileResponse;
 import az.company.bookappbackend.user.entity.UserEntity;
+import az.company.bookappbackend.user.exceptions.UserAvatarAlreadyEmptyException;
 import az.company.bookappbackend.user.exceptions.UserNotFoundException;
 import az.company.bookappbackend.user.exceptions.UsernameAlreadyExists;
 import az.company.bookappbackend.user.repository.UserRepository;
@@ -68,10 +69,16 @@ public class UserService {
         return userRepository.save(userEntity).isPublic();
     }
 
+    //This method handles both creation and update of the avatar photo
     @Transactional
     public String uploadUserAvatar(Long userId, MultipartFile file) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
+
+        // If user photo exists, it deletes old one to optimize storage
+        if (userEntity.getAvatarUrl() != null) {
+            deleteUserAvatar(userId);
+        }
 
         String avatarUrl = minioStorageService.uploadProfilePhoto(userEntity.getUsername(), file);
         userEntity.setAvatarUrl(avatarUrl);
@@ -91,5 +98,20 @@ public class UserService {
                 profilePhotoFile.headers().get("Content-Type"),
                 profilePhotoFile
         );
+    }
+
+    @Transactional
+    public void deleteUserAvatar(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
+
+        if (userEntity.getAvatarUrl() == null) {
+            throw new UserAvatarAlreadyEmptyException("User avatar is already empty with id " + userId);
+        }
+
+        minioStorageService.deleteProfilePhoto(userEntity.getAvatarUrl());
+
+        userEntity.setAvatarUrl(null);
+        userRepository.save(userEntity);
     }
 }
