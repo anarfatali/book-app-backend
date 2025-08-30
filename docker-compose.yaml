@@ -1,0 +1,31 @@
+services:
+  minio_book_app_backend:
+    image: minio/minio:latest
+    container_name: minio_book_app_backend
+    ports:
+      - '9001:9001'
+      - '9000:9000'
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - CONSOLE_ACCESS_KEY=test
+      - CONSOLE_SECRET_KEY=test
+    command: server --address ":9000" --console-address ":9001" /data
+    volumes:
+      - minio_data:/data
+
+  postgres_book_app_backend:
+    image: postgres:13
+    container_name: postgres_book_app_backend
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=book-app-backend
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  minio_data:
