@@ -44,7 +44,7 @@ public class EmailService {
     }
 
     private String getVerificationEmailBody(UserEntity user, String otp) {
-        String recipientName = user.getName() == null ? "User" : user.getName();
+        String recipientName = user.getName() == null ? "User" : user.getUsername();
         return String.format("""
                         Hello %s,
                         
@@ -83,7 +83,7 @@ public class EmailService {
     }
 
     private String getWelcomeEmailBody(UserEntity user) {
-        String recipientName = user.getName() == null ? "User" : user.getName();
+        String recipientName = user.getName() == null ? "User" : user.getUsername();
         return String.format("""
                         Hello %s,
                         
