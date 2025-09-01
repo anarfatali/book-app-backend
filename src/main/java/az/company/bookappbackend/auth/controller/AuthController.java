@@ -48,8 +48,8 @@ public class AuthController {
     @Operation(summary = "User login", description = "Authenticate user and return JWT tokens")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login successful"),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials"),
-            @ApiResponse(responseCode = "400", description = "Email not verified")
+            @ApiResponse(responseCode = "400", description = "Email not verified"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials")
     })
     public ResponseEntity<AuthResponse> login(
             @Valid @RequestBody LoginRequest request,
@@ -72,7 +72,8 @@ public class AuthController {
     @Operation(summary = "Verify email", description = "Verify user email with OTP")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email verified successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid or expired OTP")
+            @ApiResponse(responseCode = "400", description = "Invalid or expired OTP"),
+            @ApiResponse(responseCode = "409", description = "Email already verified"),
     })
     public ResponseEntity<String> verifyEmail(@Valid @RequestBody VerificationRequest request) {
         authService.verifyEmail(request);
@@ -84,7 +85,8 @@ public class AuthController {
     @Operation(summary = "Resend verification email", description = "Send a new verification OTP to user email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Verification email sent"),
-            @ApiResponse(responseCode = "400", description = "Email already verified or user not found")
+            @ApiResponse(responseCode = "400", description = "Email already verified"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<String> resendVerification(@Valid @RequestBody ResendVerificationRequest request) {
         authService.resendVerification(request);
@@ -130,7 +132,8 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(summary = "User logout", description = "Logout user and revoke refresh token")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Logout successful")
+            @ApiResponse(responseCode = "200", description = "Logout successful"),
+            @ApiResponse(responseCode = "401", description = "Invalid refresh token")
     })
     public ResponseEntity<String> logout(
             @CookieValue(name = "refreshToken", required = false) String refreshToken,

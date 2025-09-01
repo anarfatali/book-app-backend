@@ -2,7 +2,6 @@ package az.company.bookappbackend.auth.dto.request;
 
 import az.company.bookappbackend.common.enums.Interests;
 import az.company.bookappbackend.common.enums.ReadingFrequency;
-import az.company.bookappbackend.common.enums.SubscriptionType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,20 +28,9 @@ public record RegisterRequest
                 @Pattern(regexp = "^\\w+$", message = "Username can only contain letters, numbers, and underscores")
                 String username,
 
-                @NotBlank(message = "Name is required")
-                @Size(max = 100, message = "Name cannot exceed 100 characters")
-                String name,
-
-                @NotBlank(message = "Surname is required")
-                @Size(max = 100, message = "Surname cannot exceed 100 characters")
-                String surname,
-
                 @NotNull(message = "Birthday is required")
                 @Past(message = "Birthday must be in the past")
                 LocalDate birthday,
-
-                @NotNull(message = "Subscription type is required")
-                SubscriptionType subscriptionType,
 
                 @NotNull(message = "Reading frequency is required")
                 ReadingFrequency readingFrequency,
@@ -50,13 +38,8 @@ public record RegisterRequest
                 @NotNull(message = "Interests are required")
                 Interests interests,
 
-                @Size(max = 500, message = "Bio cannot exceed 500 characters")
-                String bio,
-
                 @NotNull(message = "Reading experience is required")
                 @Size(max = 100, message = "Reading experience cannot exceed 100 characters")
-                String readingExperience,
-
-                boolean isPrivate
+                String readingExperience
         ) {
 }
