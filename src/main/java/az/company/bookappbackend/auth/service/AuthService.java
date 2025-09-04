@@ -76,7 +76,7 @@ public class AuthService {
                 .readingExperience(request.readingExperience())
                 .isPrivate(false)
                 .role(Role.USER)
-                .verified(false)
+                .isVerified(false)
                 .isDeleted(false)
                 .build();
 

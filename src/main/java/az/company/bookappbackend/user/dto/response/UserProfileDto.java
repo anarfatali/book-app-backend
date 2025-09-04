@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -25,7 +26,7 @@ public class UserProfileDto {
     private String avatarUrl;
     private String bio;
     private String readingExperience;
-    private Interest interests;
+    private Set<Interest> interests;
     private SubscriptionType subscriptionType;
     private ReadingFrequency readingFrequency;
     private boolean isPrivate;

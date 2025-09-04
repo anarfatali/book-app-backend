@@ -113,9 +113,9 @@ public class UserEntity implements Serializable {
     @Builder.Default
     private Set<Interest> interests = new HashSet<>();
 
-    @Column(name = "is_public", nullable = false)
+    @Column(name = "is_private", nullable = false)
     @Builder.Default
-    private boolean isPublic = true;
+    private boolean isPrivate = true;
 
     @Column(name = "is_deleted")
     @Builder.Default

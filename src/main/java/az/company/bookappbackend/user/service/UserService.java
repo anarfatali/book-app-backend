@@ -1,7 +1,6 @@
 package az.company.bookappbackend.user.service;
 
 import az.company.bookappbackend.minio.service.MinioStorageService;
-import az.company.bookappbackend.user.UserMapper;
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
@@ -11,6 +10,7 @@ import az.company.bookappbackend.user.entity.UserEntity;
 import az.company.bookappbackend.user.exceptions.UserAvatarAlreadyEmptyException;
 import az.company.bookappbackend.user.exceptions.UserNotFoundException;
 import az.company.bookappbackend.user.exceptions.UsernameAlreadyExists;
+import az.company.bookappbackend.user.mapper.UserMapper;
 import az.company.bookappbackend.user.repository.UserRepository;
 import io.minio.GetObjectResponse;
 import lombok.RequiredArgsConstructor;
@@ -60,13 +60,13 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUserVisibility(Long userId, boolean isPublic) {
+    public boolean updateUserVisibility(Long userId, boolean isPrivate) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
 
-        userEntity.setPublic(isPublic);
+        userEntity.setPrivate(isPrivate);
 
-        return userRepository.save(userEntity).isPublic();
+        return userRepository.save(userEntity).isPrivate();
     }
 
     //This method handles both creation and update of the avatar photo
