@@ -1,6 +1,6 @@
 package az.company.bookappbackend.common.enums;
 
-public enum Interests {
+public enum Interest {
 
     PSYCHOLOGY,
     SELF_HELP,
