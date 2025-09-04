@@ -1,6 +1,6 @@
 package az.company.bookappbackend.auth.dto.response;
 
-import az.company.bookappbackend.user.dto.UserProfileDto;
+import az.company.bookappbackend.user.dto.response.UserProfileDto;
 
 public record AuthResponse
         (

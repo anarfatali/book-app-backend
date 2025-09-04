@@ -68,7 +68,7 @@ public class UserController {
     @PutMapping("/{userId}/profile/visibility")
     public ResponseEntity<UpdateUserVisibilityDto> updateUserProfileVisibility(
             @PathVariable("userId") @NotNull @Min(1) Long userId,
-            @RequestParam("isPublic") boolean isPublic
+            @RequestParam("isPrivate") boolean isPublic
     ) {
         boolean isPublicNow = userService.updateUserVisibility(userId, isPublic);
 

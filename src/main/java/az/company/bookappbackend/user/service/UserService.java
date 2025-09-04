@@ -1,7 +1,6 @@
 package az.company.bookappbackend.user.service;
 
 import az.company.bookappbackend.minio.service.MinioStorageService;
-import az.company.bookappbackend.user.UserMapper;
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
@@ -11,6 +10,7 @@ import az.company.bookappbackend.user.entity.UserEntity;
 import az.company.bookappbackend.user.exceptions.UserAvatarAlreadyEmptyException;
 import az.company.bookappbackend.user.exceptions.UserNotFoundException;
 import az.company.bookappbackend.user.exceptions.UsernameAlreadyExists;
+import az.company.bookappbackend.user.mapper.UserMapper;
 import az.company.bookappbackend.user.repository.UserRepository;
 import io.minio.GetObjectResponse;
 import lombok.RequiredArgsConstructor;
