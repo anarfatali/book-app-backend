@@ -72,7 +72,8 @@ public class AuthController {
     @Operation(summary = "Verify email", description = "Verify user email with OTP")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email verified successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid or expired OTP")
+            @ApiResponse(responseCode = "400", description = "Invalid or expired OTP"),
+            @ApiResponse(responseCode = "409", description = "Email already verified"),
     })
     public ResponseEntity<String> verifyEmail(@Valid @RequestBody VerificationRequest request) {
         authService.verifyEmail(request);

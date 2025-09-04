@@ -115,7 +115,7 @@ public class UserEntity implements Serializable {
 
     @Column(name = "is_public", nullable = false)
     @Builder.Default
-    private boolean isPublic = true;
+    private boolean isPrivate = true;
 
     @Column(name = "is_deleted")
     @Builder.Default

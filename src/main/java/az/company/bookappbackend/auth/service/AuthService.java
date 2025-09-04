@@ -76,12 +76,12 @@ public class AuthService {
                 .readingExperience(request.readingExperience())
                 .isPrivate(false)
                 .role(Role.USER)
-                .verified(false)
+                .isVerified(false)
                 .isDeleted(false)
                 .build();
 
         userRepository.save(user);
-        log.info("AuthService::register User registered successfully: {}", user.getUsername());
+        log.info("AuthService::register User registered successfully: {}", user.getEmail());
 
         sendVerificationEmail(user);
     }

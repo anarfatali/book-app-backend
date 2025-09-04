@@ -1,6 +1,6 @@
 package az.company.bookappbackend.auth.dto.request;
 
-import az.company.bookappbackend.common.enums.Interests;
+import az.company.bookappbackend.common.enums.Interest;
 import az.company.bookappbackend.common.enums.ReadingFrequency;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record RegisterRequest
         (
@@ -36,7 +37,7 @@ public record RegisterRequest
                 ReadingFrequency readingFrequency,
 
                 @NotNull(message = "Interests are required")
-                Interests interests,
+                Set<Interest> interests,
 
                 @NotNull(message = "Reading experience is required")
                 @Size(max = 100, message = "Reading experience cannot exceed 100 characters")
