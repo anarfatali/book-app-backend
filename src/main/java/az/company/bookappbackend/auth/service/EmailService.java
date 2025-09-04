@@ -2,7 +2,6 @@ package az.company.bookappbackend.auth.service;
 
 import az.company.bookappbackend.auth.exception.EmailSendException;
 import az.company.bookappbackend.user.entity.UserEntity;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +10,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 @Slf4j
 @Service
@@ -20,7 +17,6 @@ import org.thymeleaf.context.Context;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private final TemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -29,49 +25,74 @@ public class EmailService {
     public void sendVerificationEmail(UserEntity user, String otp) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 
-            Context context = new Context();
-            context.setVariable("name", user.getName());
-            context.setVariable("otp", otp);
-            context.setVariable("expiryMinutes", 15);
-
-            String htmlContent = templateEngine.process("verification-email", context);
+            String body = getVerificationEmailBody(user, otp);
 
             helper.setTo(user.getEmail());
             helper.setFrom(fromEmail);
             helper.setSubject("Verify your email address");
-            helper.setText(htmlContent, true);
+            helper.setText(body, false);
 
             mailSender.send(message);
-            log.info("Verification email sent to: {}", user.getEmail());
+            log.info("EmailService::sendVerificationEmail Verification email sent to: {}", user.getEmail());
         } catch (Exception e) {
-            log.error("Failed to send verification email to: {}", user.getEmail(), e);
+            log.error("EmailService::sendVerificationEmailFailed to send verification email to: {}", user.getEmail(),
+                    e);
             throw new EmailSendException("Email send failed");
         }
+    }
+
+    private String getVerificationEmailBody(UserEntity user, String otp) {
+        String recipientName = user.getName() == null ? "User" : user.getUsername();
+        return String.format("""
+                        Hello %s,
+                        
+                        To verify your account, please use the following OTP code:
+                        
+                          %s
+                        
+                        This code is valid for %d minutes.
+                        
+                        If you did not request this, please ignore this email.
+                        
+                        Regards,
+                        The BookApp Team""",
+                recipientName, otp, 15);
     }
 
     @Async
     public void sendWelcomeEmail(UserEntity user) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 
-            Context context = new Context();
-            context.setVariable("name", user.getName());
-
-            String htmlContent = templateEngine.process("welcome-email", context);
+            String body = getWelcomeEmailBody(user);
 
             helper.setTo(user.getEmail());
             helper.setFrom(fromEmail);
             helper.setSubject("Welcome to BookApp!");
-            helper.setText(htmlContent, true);
+            helper.setText(body, false);
 
             mailSender.send(message);
-            log.info("Welcome email sent to: {}", user.getEmail());
-        } catch (MessagingException e) {
-            log.error("Failed to send welcome email to: {}", user.getEmail(), e);
+            log.info("EmailService::sendWelcomeEmail Welcome email sent to: {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("EmailService::sendWelcomeEmail Failed to send welcome email to: {}", user.getEmail(), e);
             throw new EmailSendException("Welcome email send failed");
         }
+    }
+
+    private String getWelcomeEmailBody(UserEntity user) {
+        String recipientName = user.getName() == null ? "User" : user.getUsername();
+        return String.format("""
+                        Hello %s,
+                        
+                        Welcome to BookApp! Your account is now active.
+                        
+                        We hope you enjoy using our service.
+                        
+                        Best regards,
+                        The BookApp Team""",
+                recipientName);
     }
 }

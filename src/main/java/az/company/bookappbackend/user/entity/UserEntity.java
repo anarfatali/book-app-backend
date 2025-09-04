@@ -90,7 +90,8 @@ public class UserEntity implements Serializable {
 
     @Column(name = "subscription_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private SubscriptionType subscriptionType;
+    @Builder.Default
+    private SubscriptionType subscriptionType = SubscriptionType.FREE;
 
     @Column(name = "reading_frequency", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -166,7 +167,7 @@ public class UserEntity implements Serializable {
     @JoinTable(
             name = "archived_posts",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name =  "post_id")
+            inverseJoinColumns = @JoinColumn(name = "post_id")
     )
     @Builder.Default
     private Set<PostEntity> archivedPosts = new HashSet<>();
