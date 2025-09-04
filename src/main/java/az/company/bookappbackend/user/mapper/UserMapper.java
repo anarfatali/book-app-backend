@@ -1,6 +1,8 @@
 package az.company.bookappbackend.user.mapper;
 
+import az.company.bookappbackend.follows.entities.FollowRequestEntity;
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
+import az.company.bookappbackend.user.dto.response.*;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UserProfileDto;
@@ -59,6 +61,15 @@ public class UserMapper {
         }
 
         return userEntity;
+    }
+
+    //TODO: Fix this mehtod
+    public FollowingResponseDTO toFollowingResponseDTO(UserEntity follower) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    public FollowRequestResponseDTO toFollowRequestResponseDTO(FollowRequestEntity followRequestEntity) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public UserProfileDto toUserDto(UserEntity user) {
