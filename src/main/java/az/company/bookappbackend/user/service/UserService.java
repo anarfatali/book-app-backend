@@ -60,13 +60,13 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateUserVisibility(Long userId, boolean isPublic) {
+    public boolean updateUserVisibility(Long userId, boolean isPrivate) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
 
-        userEntity.setPublic(isPublic);
+        userEntity.setPrivate(isPrivate);
 
-        return userRepository.save(userEntity).isPublic();
+        return userRepository.save(userEntity).isPrivate();
     }
 
     //This method handles both creation and update of the avatar photo
