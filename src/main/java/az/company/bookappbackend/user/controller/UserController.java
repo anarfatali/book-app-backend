@@ -1,23 +1,20 @@
 package az.company.bookappbackend.user.controller;
 
+import az.company.bookappbackend.storage_service.FileContent;
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UpdateUserVisibilityDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
-import az.company.bookappbackend.user.dto.response.UserAvatarResponse;
 import az.company.bookappbackend.user.dto.response.UserProfileResponse;
 import az.company.bookappbackend.user.service.UserService;
-import io.minio.GetObjectResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -85,16 +82,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/avatar")
-    public ResponseEntity<InputStreamResource> getUserAvatar(@PathVariable("userId") @NotNull @Min(1) Long userId) {
-        UserAvatarResponse userAvatarResponse = userService.getUserAvatar(userId);
-
-        String avatarUrl = userAvatarResponse.avatarUrl();
-        GetObjectResponse userAvatar = userAvatarResponse.file();
+    public ResponseEntity<byte[]> getUserAvatar(@PathVariable("userId") @NotNull @Min(1) Long userId) {
+        FileContent fileContent = userService.getUserAvatar(userId);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + avatarUrl + "\"")
-                .contentType(MediaType.parseMediaType(userAvatarResponse.contentType()))
-                .body(new InputStreamResource(userAvatar));
+                .contentType(MediaType.parseMediaType(fileContent.contentType()))
+                .body(fileContent.fileBytes());
     }
 
     @DeleteMapping("/{userId}/avatar")

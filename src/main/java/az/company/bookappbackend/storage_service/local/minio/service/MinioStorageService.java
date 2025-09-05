@@ -1,9 +1,9 @@
-package az.company.bookappbackend.minio.service;
+package az.company.bookappbackend.storage_service.local.minio.service;
 
-import az.company.bookappbackend.minio.exceptions.FileDeleteException;
-import az.company.bookappbackend.minio.exceptions.FileFetchException;
-import az.company.bookappbackend.minio.exceptions.FileUploadException;
-import az.company.bookappbackend.minio.exceptions.FileValidationException;
+import az.company.bookappbackend.storage_service.local.minio.exception.FileDeleteException;
+import az.company.bookappbackend.storage_service.local.minio.exception.FileFetchException;
+import az.company.bookappbackend.storage_service.local.minio.exception.FileUploadException;
+import az.company.bookappbackend.storage_service.local.minio.exception.FileValidationException;
 import io.minio.GetObjectArgs;
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
@@ -21,6 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+//TODO: remove this class
 public class MinioStorageService {
 
     private final MinioClient minioClient;
@@ -40,6 +41,7 @@ public class MinioStorageService {
         }
     }
 
+    //
     public GetObjectResponse getProfilePhotoFile(String objectName) {
         try {
             return minioClient.getObject(
