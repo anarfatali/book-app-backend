@@ -35,7 +35,7 @@ public class BlockEntity implements Serializable {
     @JoinColumn(name = "blocker_id", nullable = false)
     private UserEntity blocker;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "blocked_id", nullable = false)
     private UserEntity blockedUser;
 
