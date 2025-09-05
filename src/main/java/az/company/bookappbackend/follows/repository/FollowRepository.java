@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
 
     @Query("SELECT f FROM FollowEntity f WHERE f.follower.id = :userID")
-    Page<FollowEntity> findUserFolloweesByUserID(Long userID, Pageable pageable);
+    Page<FollowEntity> findUserFolloweesByUserId(Long userID, Pageable pageable);
 
     @Query("SELECT f FROM FollowEntity f WHERE f.followee.id = :userID")
-    Page<FollowEntity> findUserFollowersByUserID(Long userID, Pageable pageable);
+    Page<FollowEntity> findUserFollowersByUserId(Long userID, Pageable pageable);
 
     @Query("SELECT f FROM FollowEntity f WHERE f.follower.id = :followerId AND f.followee.id = :userId")
     Optional<FollowEntity> findByFollowerIdAndFolloweeId(Long followerId, Long userId);

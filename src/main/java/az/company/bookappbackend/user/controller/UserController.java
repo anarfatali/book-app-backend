@@ -112,22 +112,23 @@ public class UserController {
 
     // Follow system endpoints
 
-    @GetMapping("/{userID}/followers")
+    @GetMapping("/{userId}/followers")
     @ResponseStatus(HttpStatus.OK)
     public Page<FollowingResponseDTO> getFollowers(
-            @PathVariable("userID") @NotNull @Min(1) Long userID,
+            @PathVariable("userId") @NotNull @Min(1) Long userId,
             @Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable
     ) {
-        return userService.getFollowers(userID, pageable);
+        return userService.getFollowers(userId, pageable);
     }
 
-    @GetMapping("/{userID}/following")
+    @GetMapping("/{userId}/following")
     @ResponseStatus(HttpStatus.OK)
     public Page<FollowingResponseDTO> getFollowing(
-            @PathVariable("userID") @NotNull @Min(1) Long userID,
-            @Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable
+            @PathVariable("userId") @NotNull @Min(1) Long userId,
+            @Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable,
+            Authentication authentication
     ) {
-        return userService.getFollowings(userID, pageable);
+        return userService.getFollowings(userId, pageable, authentication);
     }
 
     @PostMapping("{userId}/follow")
@@ -164,28 +165,28 @@ public class UserController {
         return userService.getOutgoingFollowRequests(pageable, authentication);
     }
 
-    @PostMapping("/me/follow-requests/outgoing/{reqID}/cancel")
+    @PostMapping("/me/follow-requests/outgoing/{reqId}/cancel")
     @ResponseStatus(HttpStatus.OK)
     public Void cancelOutgoingFollowRequest(
-            @PathVariable("reqID") @NotNull @Min(1) Long reqID
+            @PathVariable("reqId") @NotNull @Min(1) Long reqId
     ) {
-        return userService.cancelOutgoingFollowRequest(reqID);
+        return userService.cancelOutgoingFollowRequest(reqId);
     }
 
-    @PostMapping("/me/follow-requests/incoming/{reqID}/accept")
+    @PostMapping("/me/follow-requests/incoming/{reqId}/accept")
     @ResponseStatus(HttpStatus.OK)
     public Void acceptFollowRequest(
-            @PathVariable("reqID") @NotNull @Min(1) Long reqID, Authentication authentication
+            @PathVariable("reqId") @NotNull @Min(1) Long reqId, Authentication authentication
     ) {
-        return userService.acceptFollowRequest(reqID, authentication);
+        return userService.acceptFollowRequest(reqId, authentication);
     }
 
-    @PostMapping("/me/follow-requests/incoming/{reqID}/reject")
+    @PostMapping("/me/follow-requests/incoming/{reqId}/reject")
     @ResponseStatus(HttpStatus.OK)
     public Void RejectFollowRequest(
-            @PathVariable("reqID") @NotNull @Min(1) Long reqID, Authentication authentication
+            @PathVariable("reqId") @NotNull @Min(1) Long reqId, Authentication authentication
     ) {
-        return userService.rejectFollowRequest(reqID, authentication);
+        return userService.rejectFollowRequest(reqId, authentication);
     }
 
     @PostMapping("/me/followers/{followerId}/remove")

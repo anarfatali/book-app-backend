@@ -225,7 +225,7 @@ public class UserService {
 
     public Page<FollowingResponseDTO> getFollowers(Long userID, Pageable pageable) {
 
-        ArrayList<FollowingResponseDTO> content = followRepository.findUserFollowersByUserID(userID, pageable).stream()
+        ArrayList<FollowingResponseDTO> content = followRepository.findUserFollowersByUserId(userID, pageable).stream()
                 .map(
                         follow -> userMapper.toFollowingResponseDTO(follow.getFollower())
                 )
@@ -245,7 +245,7 @@ public class UserService {
     public Page<FollowingResponseDTO> getFollowings(Long userID, Pageable pageable, Authentication authentication) {
 
         String userName = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+        Long currentUserId = userRepository.findUserIdByUsername(userName).orElseThrow(
                 () -> new UserNotFoundException("User not found with username " + userName)
         );
 
@@ -261,7 +261,7 @@ public class UserService {
             throw new RuntimeException("Private user.");
         }
 
-        ArrayList<FollowingResponseDTO> content = followRepository.findUserFolloweesByUserID(userID, pageable).stream()
+        ArrayList<FollowingResponseDTO> content = followRepository.findUserFolloweesByUserId(userID, pageable).stream()
                 .map(
                         follow -> userMapper.toFollowingResponseDTO(follow.getFollower())
                 )
@@ -280,7 +280,7 @@ public class UserService {
 
     public Page<FollowingResponseDTO> getUserFollowers(Pageable pageable, Authentication authentication) {
         String userName = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+        Long currentUserId = userRepository.findUserIdByUsername(userName).orElseThrow(
                 () -> new UserNotFoundException("User not found with username " + userName)
         );
         return getFollowers(currentUserId, pageable);
@@ -288,7 +288,7 @@ public class UserService {
 
     public Page<FollowingResponseDTO> getUserFollowings(Pageable pageable, Authentication authentication) {
         String userName = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+        Long currentUserId = userRepository.findUserIdByUsername(userName).orElseThrow(
                 () -> new UserNotFoundException("User not found with username " + userName)
         );
 
@@ -297,7 +297,7 @@ public class UserService {
 
     public Page<FollowRequestResponseDTO> getOutgoingFollowRequests(Pageable pageable, Authentication authentication) {
         String userName = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+        Long currentUserId = userRepository.findUserIdByUsername(userName).orElseThrow(
                 () -> new UserNotFoundException("User not found with username " + userName)
         );
 
@@ -311,7 +311,7 @@ public class UserService {
 
     public Page<FollowRequestResponseDTO> getIncomingFollowRequests(Pageable pageable, Authentication authentication) {
         String userName = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+        Long currentUserId = userRepository.findUserIdByUsername(userName).orElseThrow(
                 () -> new UserNotFoundException("User not found with username " + userName)
         );
 
@@ -329,7 +329,7 @@ public class UserService {
     public Void acceptFollowRequest(Long reqID, Authentication authentication) {
 
         String userName = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+        Long currentUserId = userRepository.findUserIdByUsername(userName).orElseThrow(
                 () -> new UserNotFoundException("User not found with username " + userName)
         );
 
@@ -358,7 +358,7 @@ public class UserService {
     public Void rejectFollowRequest(Long reqID, Authentication authentication) {
 
         String userName = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+        Long currentUserId = userRepository.findUserIdByUsername(userName).orElseThrow(
                 () -> new UserNotFoundException("User not found with username " + userName)
         );
 
@@ -471,7 +471,7 @@ public class UserService {
 
     public Void unblockUser(@NotNull @Min(1) Long userId, Authentication authentication) {
         String name = authentication.getName();
-        Long currentUserId = userRepository.userIdByUsername(name)
+        Long currentUserId = userRepository.findUserIdByUsername(name)
                 .orElseThrow(() -> new UserNotFoundException("User not found with name " + name));
 
         BlockEntity blockEntity = (BlockEntity) blockRepository.findByBlockerAndBlockedUser(currentUserId, userId)

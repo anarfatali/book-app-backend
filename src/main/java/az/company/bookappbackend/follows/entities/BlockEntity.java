@@ -15,6 +15,13 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(
+        name = "blocks",
+        indexes = {
+                @Index(name = "idx_blocks_blocker_id", columnList = "blocker_id"),
+                @Index(name = "idx_blocks_blocked_id", columnList = "blocked_id"),
+        }
+)
 public class BlockEntity implements Serializable {
 
     @Serial
