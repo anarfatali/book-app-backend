@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,6 +23,7 @@ public class FollowRequestEntity implements Serializable {
     private static final long serialVersionUID = 1L + 1;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -33,5 +35,7 @@ public class FollowRequestEntity implements Serializable {
     @JoinColumn(name = "to_id")
     private UserEntity toUser;
 
+    @CreationTimestamp
+    @Column(name = "requested_at", nullable = false, updatable = false)
     private Instant requestedAt;
 }

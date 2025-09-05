@@ -242,7 +242,24 @@ public class UserService {
         );
     }
 
-    public Page<FollowingResponseDTO> getFollowings(Long userID, Pageable pageable) {
+    public Page<FollowingResponseDTO> getFollowings(Long userID, Pageable pageable, Authentication authentication) {
+
+        String userName = authentication.getName();
+        Long currentUserId = userRepository.userIdByUsername(userName).orElseThrow(
+                () -> new UserNotFoundException("User not found with username " + userName)
+        );
+
+        if (blockRepository.findByBlockerAndBlockedUser(userID, currentUserId).isEmpty()) {
+            throw new RuntimeException("You are blocked by this user. or User not found.");
+        }
+
+        UserEntity user = userRepository.findById(userID).orElseThrow(
+                () -> new UserNotFoundException("User not found with id " + userID)
+        );
+
+        if (user.isPrivate()) {
+            throw new RuntimeException("Private user.");
+        }
 
         ArrayList<FollowingResponseDTO> content = followRepository.findUserFolloweesByUserID(userID, pageable).stream()
                 .map(
@@ -302,6 +319,7 @@ public class UserService {
         return allByFromID.map(userMapper::toFollowRequestResponseDTO);
     }
 
+    @Transactional
     public Void cancelOutgoingFollowRequest(Long reqID) {
         followRequestRepository.deleteById(reqID);
         return null;
@@ -377,7 +395,6 @@ public class UserService {
         currUser.setFollowersCount(myFollowerCount - 1);
 
         Long hisFollowingCount = follower.getFollowingCount();
-        follower.setFollowingCount(hisFollowingCount - 1);
         follower.setFollowingCount(hisFollowingCount - 1);
 
         return null;

@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface BlockRepository extends JpaRepository<BlockEntity, Long> {
 
     @Query("SELECT b FROM BlockEntity b WHERE b.blocker.id = :blockerID AND b.blockedUser.id = :blockedID")
-    Optional<Object> findByBlockerAndBlockedUser(Long blockerID, Long blockedID);
+    Optional<BlockEntity> findByBlockerAndBlockedUser(Long blockerID, Long blockedID);
 }

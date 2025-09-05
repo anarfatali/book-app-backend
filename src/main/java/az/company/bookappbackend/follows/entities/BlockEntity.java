@@ -32,7 +32,7 @@ public class BlockEntity implements Serializable {
     @JoinColumn(name = "blocked_id", nullable = false)
     private UserEntity blockedUser;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "blocked_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Instant blockedAt;
 }
