@@ -1,18 +1,19 @@
 package az.company.bookappbackend.user.service;
 
-import az.company.bookappbackend.minio.service.MinioStorageService;
+import az.company.bookappbackend.storage_service.FileContent;
+import az.company.bookappbackend.storage_service.StorageService;
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
-import az.company.bookappbackend.user.dto.response.UserAvatarResponse;
 import az.company.bookappbackend.user.dto.response.UserProfileResponse;
 import az.company.bookappbackend.user.entity.UserEntity;
+import az.company.bookappbackend.user.exceptions.FileNotFoundException;
 import az.company.bookappbackend.user.exceptions.UserAvatarAlreadyEmptyException;
+import az.company.bookappbackend.user.exceptions.UserAvatarIsEmptyException;
 import az.company.bookappbackend.user.exceptions.UserNotFoundException;
 import az.company.bookappbackend.user.exceptions.UsernameAlreadyExists;
 import az.company.bookappbackend.user.mapper.UserMapper;
 import az.company.bookappbackend.user.repository.UserRepository;
-import io.minio.GetObjectResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final MinioStorageService minioStorageService;
+    private final StorageService storageService;
+    private final String PROFILE_PICTURE_BUCKET = "profile_picture_bucket"; //this needs to be moved to constants class
     private final UserMapper userMapper;
 
     public UserProfileResponse getUserProfile(Long userId) {
@@ -77,27 +79,30 @@ public class UserService {
 
         // If user photo exists, it deletes old one to optimize storage
         if (userEntity.getAvatarUrl() != null) {
-            deleteUserAvatar(userId);
+            storageService.deleteFile(userEntity.getAvatarUrl(), PROFILE_PICTURE_BUCKET);
         }
 
-        String avatarUrl = minioStorageService.uploadProfilePhoto(userEntity.getUsername(), file);
-        userEntity.setAvatarUrl(avatarUrl);
+        String fileName = "%d-%s".formatted(userId, file.getOriginalFilename());
+
+        storageService.uploadFile(fileName, PROFILE_PICTURE_BUCKET, file);
+
+        userEntity.setAvatarUrl(fileName);
+
         userRepository.save(userEntity);
 
-        return avatarUrl;
+        return fileName;
     }
 
-    public UserAvatarResponse getUserAvatar(Long userId) {
+    public FileContent getUserAvatar(Long userId) {
         String avatarUrl = userRepository.findAvatarUrlByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
 
-        GetObjectResponse profilePhotoFile = minioStorageService.getProfilePhotoFile(avatarUrl);
+        if (avatarUrl == null) {
+            throw new UserAvatarIsEmptyException("UserAvatar is empty"); //this needs to return status code 404
+        }
 
-        return new UserAvatarResponse(
-                avatarUrl,
-                profilePhotoFile.headers().get("Content-Type"),
-                profilePhotoFile
-        );
+        return storageService.findFile(avatarUrl, PROFILE_PICTURE_BUCKET)
+                .orElseThrow(() -> new FileNotFoundException("Profile picture not found with file name " + avatarUrl));
     }
 
     @Transactional
@@ -105,11 +110,13 @@ public class UserService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
 
-        if (userEntity.getAvatarUrl() == null) {
+        String avatarUrl = userEntity.getAvatarUrl();
+
+        if (avatarUrl == null) {
             throw new UserAvatarAlreadyEmptyException("User avatar is already empty with id " + userId);
         }
 
-        minioStorageService.deleteProfilePhoto(userEntity.getAvatarUrl());
+        storageService.deleteFile(avatarUrl, PROFILE_PICTURE_BUCKET);
 
         userEntity.setAvatarUrl(null);
         userRepository.save(userEntity);
