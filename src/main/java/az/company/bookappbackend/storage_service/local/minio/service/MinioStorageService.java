@@ -1,6 +1,7 @@
 package az.company.bookappbackend.storage_service.local.minio.service;
 
 import az.company.bookappbackend.storage_service.FileContent;
+import az.company.bookappbackend.storage_service.FileUtility;
 import az.company.bookappbackend.storage_service.StorageService;
 import az.company.bookappbackend.storage_service.local.minio.exception.FileDeleteException;
 import az.company.bookappbackend.storage_service.local.minio.exception.FileUploadException;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +65,27 @@ public class MinioStorageService implements StorageService {
     }
 
     @Override
+    public String uploadFile(String filename, String bucketName, byte[] file, String contentType) {
+        try {
+            try (InputStream inputStream = new ByteArrayInputStream(file)) {
+                minioClient.putObject(
+                        PutObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(filename)
+                                .stream(inputStream, file.length, -1)
+                                .contentType(contentType)
+                                .build()
+                );
+            }
+
+            return "success";
+        } catch (Exception e) {
+            log.error("Couldn't write the file with bytes. Message: {}", e.getMessage());
+            throw new FileUploadException(e.getMessage());
+        }
+    }
+
+    @Override
     public Optional<FileContent> findFile(String fileName, String bucketName) {
         try (
                 GetObjectResponse response = minioClient.getObject(
@@ -77,7 +100,7 @@ public class MinioStorageService implements StorageService {
 
             //minio can sometimes return not a correct content type
             if (contentType == null || contentType.isEmpty()) {
-                contentType = determineContentTypeFromFileName(fileName);
+                contentType = FileUtility.determineContentTypeFromFileName(fileName);
             }
 
             FileContent fileContent = new FileContent(
@@ -103,25 +126,5 @@ public class MinioStorageService implements StorageService {
             log.error("Couldn't delete the file. Message: {}", e.getMessage());
             throw new FileDeleteException(e.getMessage());
         }
-    }
-
-    private String determineContentTypeFromFileName(String fileName) {
-        String lowerCaseFileName = fileName.toLowerCase();
-
-        if (lowerCaseFileName.endsWith(".jpg") || lowerCaseFileName.endsWith(".jpeg")) {
-            return "image/jpeg";
-        } else if (lowerCaseFileName.endsWith(".png")) {
-            return "image/png";
-        } else if (lowerCaseFileName.endsWith(".gif")) {
-            return "image/gif";
-        } else if (lowerCaseFileName.endsWith(".webp")) {
-            return "image/webp";
-        } else if (lowerCaseFileName.endsWith(".bmp")) {
-            return "image/bmp";
-        } else if (lowerCaseFileName.endsWith(".svg")) {
-            return "image/svg+xml";
-        }
-
-        return "application/octet-stream"; // Default fallback
     }
 }

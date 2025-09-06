@@ -1,6 +1,7 @@
 package az.company.bookappbackend.user.service;
 
 import az.company.bookappbackend.storage_service.FileContent;
+import az.company.bookappbackend.storage_service.FileUtility;
 import az.company.bookappbackend.storage_service.StorageService;
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import static az.company.bookappbackend.storage_service.StorageConstants.PROFILE_PICTURE_BUCKET;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -28,7 +31,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final StorageService storageService;
-    private final String PROFILE_PICTURE_BUCKET = "profile_picture_bucket"; //this needs to be moved to constants class
     private final UserMapper userMapper;
 
     public UserProfileResponse getUserProfile(Long userId) {
@@ -82,7 +84,9 @@ public class UserService {
             storageService.deleteFile(userEntity.getAvatarUrl(), PROFILE_PICTURE_BUCKET);
         }
 
-        String fileName = "%d-%s".formatted(userId, file.getOriginalFilename());
+        String fileExtension = FileUtility.getFileExtensionSafe(file.getOriginalFilename());
+
+        String fileName = "profile_%s.%s".formatted(userEntity.getUsername(), fileExtension);
 
         storageService.uploadFile(fileName, PROFILE_PICTURE_BUCKET, file);
 

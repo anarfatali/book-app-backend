@@ -46,6 +46,25 @@ public class S3StorageService implements StorageService {
     }
 
     @Override
+    public String uploadFile(String filename, String bucketName, byte[] file, String contentType) {
+        try {
+            s3Client.putObject(PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(filename)
+                            .contentType(contentType)
+                            .contentLength((long) file.length)
+                            .build(),
+                    RequestBody.fromBytes(file)
+            );
+
+            return "Successfully uploaded file to S3";
+        } catch (Exception e) {
+            log.error("Error uploading file to S3 with bytes: {}", e.getMessage());
+            throw new S3FileUploadException("Failed to upload file to S3");
+        }
+    }
+
+    @Override
     public Optional<FileContent> findFile(String fileName, String bucketName) {
         try {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()

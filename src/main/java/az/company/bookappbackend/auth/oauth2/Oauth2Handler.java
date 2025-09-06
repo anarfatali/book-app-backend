@@ -4,24 +4,34 @@ import az.company.bookappbackend.auth.service.JwtService;
 import az.company.bookappbackend.common.enums.ReadingFrequency;
 import az.company.bookappbackend.common.enums.Role;
 import az.company.bookappbackend.common.enums.SubscriptionType;
+import az.company.bookappbackend.storage_service.FileUtility;
+import az.company.bookappbackend.storage_service.StorageService;
 import az.company.bookappbackend.user.entity.UserEntity;
 import az.company.bookappbackend.user.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
+import static az.company.bookappbackend.storage_service.StorageConstants.PROFILE_PICTURE_BUCKET;
+
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class Oauth2Handler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
+    private final RestTemplate restTemplate;
+    private final StorageService storageService;
     private final JwtService jwtService;
 
     @Override
@@ -61,15 +71,34 @@ public class Oauth2Handler extends SimpleUrlAuthenticationSuccessHandler {
             username = baseUsername + counter++;
         }
 
+        // Handling profile picture upload
+        String profileUrl = null;
+        try {
+            String contentType = "image/jpeg"; //default content type
+
+            if (picture != null) {
+                ResponseEntity<byte[]> response = restTemplate.getForEntity(picture, byte[].class);
+                byte[] pictureBytes = response.getBody();
+                if (response.getHeaders().getContentType() != null) {
+                    contentType = response.getHeaders().getContentType().toString();
+                }
+                String fileExtension = FileUtility.getFileExtensionFromContentType(contentType);
+
+                profileUrl = "profile_%s.%s".formatted(username, fileExtension);
+
+                storageService.uploadFile(profileUrl, PROFILE_PICTURE_BUCKET, pictureBytes, contentType);
+            }
+        } catch (Exception e) {
+            log.error("Error uploading user profile picture: {}", e.getMessage());
+        }
+
         var user = UserEntity.builder()
                 .email(email)
                 .passwordHash("")
                 .username(username)
-                .name(name != null ? name : "")
-                .surname(surname != null ? surname : "")
-                .avatarUrl(picture)
+                .avatarUrl(profileUrl)
                 .role(Role.USER)
-                .verified(true)
+                .isVerified(true)
                 .subscriptionType(SubscriptionType.FREE)
                 .readingFrequency(ReadingFrequency.OCCASIONALLY)
                 .build();
