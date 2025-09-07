@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
@@ -31,11 +32,11 @@ public class Oauth2Handler extends SimpleUrlAuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
-        String surname = oAuth2User.getAttribute("family_name");
         String picture = oAuth2User.getAttribute("picture");
+        LocalDate birthDate = oAuth2User.getAttribute("birthday");
 
         var user = userRepository.findByEmail(email)
-                .orElseGet(() -> createUserFromOAuth2(email, name, surname, picture));
+                .orElseGet(() -> createUserFromOAuth2(email, name, picture, birthDate));
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -52,24 +53,22 @@ public class Oauth2Handler extends SimpleUrlAuthenticationSuccessHandler {
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 
-    private UserEntity createUserFromOAuth2(String email, String name, String surname, String picture) {
-        String baseUsername = name + surname;
-        String username = baseUsername;
+    private UserEntity createUserFromOAuth2(String email, String name, String picture, LocalDate birthDate) {
+        String username = name;
         int counter = 1;
 
         while (userRepository.existsByUsername(username)) {
-            username = baseUsername + counter++;
+            username = name + counter++;
         }
 
         var user = UserEntity.builder()
                 .email(email)
                 .passwordHash("")
                 .username(username)
-                .name(name != null ? name : "")
-                .surname(surname != null ? surname : "")
                 .avatarUrl(picture)
+                .birthday(birthDate)
                 .role(Role.USER)
-                .verified(true)
+                .isVerified(true)
                 .subscriptionType(SubscriptionType.FREE)
                 .readingFrequency(ReadingFrequency.OCCASIONALLY)
                 .build();
