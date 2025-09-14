@@ -11,7 +11,6 @@ import az.company.bookappbackend.exchange.entity.ExchangeRequestEntity;
 import az.company.bookappbackend.library.entity.LibraryEntity;
 import az.company.bookappbackend.notification.entity.NotificationEntity;
 import az.company.bookappbackend.social.entity.CommentEntity;
-import az.company.bookappbackend.social.entity.FollowEntity;
 import az.company.bookappbackend.social.entity.PostEntity;
 import az.company.bookappbackend.social.entity.ReviewEntity;
 import az.company.bookappbackend.wishlist.WishlistEntity;
@@ -194,14 +193,6 @@ public class UserEntity implements Serializable {
     @Builder.Default
     private List<CommentEntity> myComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private Set<FollowEntity> following = new HashSet<>();
-
-    @OneToMany(mappedBy = "followee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private Set<FollowEntity> followers = new HashSet<>();
-
     // library one to one
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
@@ -233,4 +224,10 @@ public class UserEntity implements Serializable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private Set<AuditLogEntity> auditLogs = new HashSet<>();
+
+    @Column(name = "followers_count")
+    private Long followersCount;
+
+    @Column(name = "following_count")
+    private Long followingCount;
 }

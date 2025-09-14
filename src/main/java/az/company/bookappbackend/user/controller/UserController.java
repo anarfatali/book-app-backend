@@ -1,11 +1,14 @@
 package az.company.bookappbackend.user.controller;
 
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
+import az.company.bookappbackend.user.dto.response.FollowRequestResponseDTO;
+import az.company.bookappbackend.user.dto.response.FollowingResponseDTO;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UpdateUserVisibilityDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UserAvatarResponse;
 import az.company.bookappbackend.user.dto.response.UserProfileResponse;
+
 import az.company.bookappbackend.user.service.UserService;
 import io.minio.GetObjectResponse;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +24,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,7 +36,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -102,4 +109,108 @@ public class UserController {
         userService.deleteUserAvatar(userId);
         return ResponseEntity.noContent().build();
     }
+
+    // Follow system endpoints
+
+    @GetMapping("/{userId}/followers")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<FollowingResponseDTO> getFollowers(
+            @PathVariable("userId") @NotNull @Min(1) Long userId,
+            @Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable
+    ) {
+        return userService.getFollowers(userId, pageable);
+    }
+
+    @GetMapping("/{userId}/following")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<FollowingResponseDTO> getFollowing(
+            @PathVariable("userId") @NotNull @Min(1) Long userId,
+            @Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable,
+            Authentication authentication
+    ) {
+        return userService.getFollowings(userId, pageable, authentication);
+    }
+
+    @PostMapping("{userId}/follow")
+    @ResponseStatus(HttpStatus.OK)
+    public FollowingResponseDTO followUser(
+            @PathVariable("userId") @NotNull @Min(1) Long userId,
+            Authentication authentication
+    ) {
+        return userService.followUser(userId, authentication);
+    }
+
+    @DeleteMapping("{userId}/follow")
+    @ResponseStatus(HttpStatus.OK)
+    public FollowingResponseDTO unfollowUser(
+            @PathVariable("userId") @NotNull @Min(1) Long userId,
+            Authentication authentication
+    ) {
+        return userService.unfollowUser(userId, authentication);
+    }
+
+    @GetMapping("/me/follow-requests/incoming")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<FollowRequestResponseDTO> allIncomingFollowRequests(
+            @Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable, Authentication authentication
+    ) {
+        return userService.getIncomingFollowRequests(pageable, authentication);
+    }
+
+    @GetMapping("/me/follow-requests/outgoing")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<FollowRequestResponseDTO> allOutgoingFollowRequests(
+            @Parameter(hidden = true) @PageableDefault(size = 20) Pageable pageable, Authentication authentication
+    ) {
+        return userService.getOutgoingFollowRequests(pageable, authentication);
+    }
+
+    @PostMapping("/me/follow-requests/outgoing/{reqId}/cancel")
+    @ResponseStatus(HttpStatus.OK)
+    public Void cancelOutgoingFollowRequest(
+            @PathVariable("reqId") @NotNull @Min(1) Long reqId
+    ) {
+        return userService.cancelOutgoingFollowRequest(reqId);
+    }
+
+    @PostMapping("/me/follow-requests/incoming/{reqId}/accept")
+    @ResponseStatus(HttpStatus.OK)
+    public Void acceptFollowRequest(
+            @PathVariable("reqId") @NotNull @Min(1) Long reqId, Authentication authentication
+    ) {
+        return userService.acceptFollowRequest(reqId, authentication);
+    }
+
+    @PostMapping("/me/follow-requests/incoming/{reqId}/reject")
+    @ResponseStatus(HttpStatus.OK)
+    public Void RejectFollowRequest(
+            @PathVariable("reqId") @NotNull @Min(1) Long reqId, Authentication authentication
+    ) {
+        return userService.rejectFollowRequest(reqId, authentication);
+    }
+
+    @PostMapping("/me/followers/{followerId}/remove")
+    @ResponseStatus(HttpStatus.OK)
+    public Void removeFollower(
+            @PathVariable("followerId") @NotNull @Min(1) Long followerId,
+            Authentication authentication
+    ) {
+        return userService.removeFollower(followerId, authentication);
+    }
+
+    @PostMapping("/{userId}/block")
+    @ResponseStatus(HttpStatus.OK)
+    public Void blockUser(
+            @PathVariable("userId") @NotNull @Min(1) Long userId,
+            Authentication authentication
+    ) {
+        return userService.blockUser(userId, authentication);
+    }
+
+    @PostMapping("/{userId}/unblock")
+    @ResponseStatus
+    public Void unblockUser(@PathVariable("userId") @NotNull @Min(1) Long userId, Authentication authentication) {
+        return userService.unblockUser(userId, authentication);
+    }
+
 }

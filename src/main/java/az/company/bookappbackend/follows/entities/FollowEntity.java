@@ -1,11 +1,8 @@
-package az.company.bookappbackend.social.entity;
+package az.company.bookappbackend.follows.entities;
 
-import az.company.bookappbackend.common.enums.FollowStatus;
 import az.company.bookappbackend.user.entity.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -55,10 +52,6 @@ public class FollowEntity implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "followee_id", nullable = false)
     private UserEntity followee;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private FollowStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
