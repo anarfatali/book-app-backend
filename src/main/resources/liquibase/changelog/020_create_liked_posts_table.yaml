@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 020_create_liked_posts_table
+      author: Anar Fataliyev
+      changes:
+        - createTable:
+            tableName: liked_posts
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: post_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: liked_posts
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_liked_posts_user
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: liked_posts
+            baseColumnNames: post_id
+            referencedTableName: posts
+            referencedColumnNames: id
+            constraintName: fk_liked_posts_post
+            onDelete: CASCADE
+        - createIndex:
+            indexName: idx_liked_posts_user_id
+            tableName: liked_posts
+            columns:
+              - column: { name: user_id }
+        - createIndex:
+            indexName: idx_liked_posts_post_id
+            tableName: liked_posts
+            columns:
+              - column: { name: post_id }
+        - addUniqueConstraint:
+            constraintName: uq_liked_posts_user_post
+            tableName: liked_posts
+            columnNames: user_id, post_id

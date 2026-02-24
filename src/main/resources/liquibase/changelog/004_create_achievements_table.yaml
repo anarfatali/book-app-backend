@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004_create_achievements_table
+      author: Anar Fataliyev
+      changes:
+        - createTable:
+            tableName: achievements
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: points
+                  type: INT
+              - column:
+                  name: earned_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: qr_code_url
+                  type: VARCHAR(500)
+        - addForeignKeyConstraint:
+            baseTableName: achievements
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_achievement_user
+        - createIndex:
+            indexName: achievement_user_id_idx
+            tableName: achievements
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: achievement_type_idx
+            tableName: achievements
+            columns:
+              - column:
+                  name: type
+        - createIndex:
+            indexName: achievement_earned_at_idx
+            tableName: achievements
+            columns:
+              - column:
+                  name: earned_at

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: book-app-backend
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_book_app_backend:5432/book-app-backend
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - MINIO_URL=http://minio-book-app-backend:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:1234@mongo:27017/bookapp?authSource=admin
+    env_file:
+      - .env
+    depends_on:
+      postgres_book_app_backend:
+        condition: service_healthy
+      minio-book-app-backend:
+        condition: service_started
+      mongo:
+        condition: service_started
+
+  minio-book-app-backend:
+    image: minio/minio:latest
+    container_name: minio-book-app-backend
+    ports:
+      - '9001:9001'
+    environment:
+      - CONSOLE_ACCESS_KEY=test
+      - CONSOLE_SECRET_KEY=test
+    command: server --address ":9000" --console-address ":9001" /data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://minio-server:9000/minio/health/ready || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - minio-data:/data
+
+  postgres_book_app_backend:
+    image: postgres:13.18-alpine
+    container_name: postgres_book_app_backend
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=book-app-backend
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    restart: unless-stopped
+    environment:
+      - MONGO_ROOT_USERNAME=mongo
+      - MONGO_ROOT_PASSWORD=1234
+      - MONGO_DATABASE=bookapp
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  postgres_data:
+  minio-data:
+  mongo_data:
