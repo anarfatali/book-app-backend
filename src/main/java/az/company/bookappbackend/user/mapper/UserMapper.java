@@ -1,10 +1,15 @@
 package az.company.bookappbackend.user.mapper;
 
+import az.company.bookappbackend.follows.entities.FollowRequestEntity;
+
 import az.company.bookappbackend.user.dto.request.EditUserInfoRequest;
+import az.company.bookappbackend.user.dto.response.FollowRequestResponseDTO;
+import az.company.bookappbackend.user.dto.response.FollowingResponseDTO;
 import az.company.bookappbackend.user.dto.response.SimpleUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UpdatedUserProfileDto;
 import az.company.bookappbackend.user.dto.response.UserProfileDto;
 import az.company.bookappbackend.user.dto.response.UserProfileResponse;
+
 import az.company.bookappbackend.user.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
@@ -59,6 +64,15 @@ public class UserMapper {
         }
 
         return userEntity;
+    }
+
+    //TODO: Fix this mehtod
+    public FollowingResponseDTO toFollowingResponseDTO(UserEntity follower) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    public FollowRequestResponseDTO toFollowRequestResponseDTO(FollowRequestEntity followRequestEntity) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public UserProfileDto toUserDto(UserEntity user) {

@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -43,6 +44,7 @@ import java.time.LocalDateTime;
 @Transactional(readOnly = true)
 public class AuthService {
 
+    private static final Pattern EMAIL = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     private final EmailVerificationRepository emailVerificationRepository;
     private final SecureRandom secureRandom = new SecureRandom();
     private final RefreshTokenRepository refreshTokenRepository;
@@ -89,6 +91,10 @@ public class AuthService {
     @Transactional
     public AuthResponse login(LoginRequest request) {
         var user = findUserByEmailOrUsername(request.identifier());
+
+        if (request.identifier().contains("@")) {
+            validateEmail(request.identifier());
+        }
 
         try {
             authenticationManager.authenticate(
@@ -244,5 +250,12 @@ public class AuthService {
 
         emailService.sendVerificationEmail(user, otp);
         log.info("AuthService::sendVerificationEmail Verification email sent to: {}", user.getEmail());
+    }
+
+    private void validateEmail(String email) {
+        if (!EMAIL.matcher(email).matches()) {
+            log.error("AuthService::validateEmail Invalid email format: {}", email);
+            throw new IllegalArgumentException("Invalid email format");
+        }
     }
 }

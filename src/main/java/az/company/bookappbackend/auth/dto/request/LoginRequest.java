@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 public record LoginRequest
         (
                 @NotBlank(message = "Email or username is required")
+                @Size(min = 3, max = 100, message = "Identifier must be between 3 and 100 characters")
                 String identifier,
 
                 @NotBlank(message = "Password is required")

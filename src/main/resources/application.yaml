@@ -8,9 +8,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
-#  liquibase:
-#    enabled: true
-#    change-log: classpath:liquibase/changelog-master.yaml
+  #  liquibase:
+  #    enabled: true
+  #    change-log: classpath:liquibase/changelog-master.yaml
   datasource:
     url: jdbc:postgresql://localhost:5432/book-app-backend
     username: postgres
@@ -61,7 +61,7 @@ logging:
         web: DEBUG
         security: DEBUG
 minio:
-  url: http://localhost:9000
+  url: ${MINIO_URL:http://localhost:9000}
   default-buckets: profile-photos
   access:
     name: "minioadmin"
@@ -73,3 +73,5 @@ aws:
     region: "your-aws-region"
     accessKey: "your-aws-access-key"
     secretKey: "your-aws-secret-key"
+    name: ${MINIO_ACCESS_KEY:minioadmin}
+    secret: ${MINIO_SECRET_KEY:minioadmin}

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static az.company.bookappbackend.storage_service.StorageConstants.PROFILE_PICTURE_BUCKET;
 
@@ -41,11 +42,11 @@ public class Oauth2Handler extends SimpleUrlAuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
-        String surname = oAuth2User.getAttribute("family_name");
         String picture = oAuth2User.getAttribute("picture");
+        LocalDate birthDate = oAuth2User.getAttribute("birthday");
 
         var user = userRepository.findByEmail(email)
-                .orElseGet(() -> createUserFromOAuth2(email, name, surname, picture));
+                .orElseGet(() -> createUserFromOAuth2(email, name, picture, birthDate));
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -62,13 +63,12 @@ public class Oauth2Handler extends SimpleUrlAuthenticationSuccessHandler {
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 
-    private UserEntity createUserFromOAuth2(String email, String name, String surname, String picture) {
-        String baseUsername = name + surname;
-        String username = baseUsername;
+    private UserEntity createUserFromOAuth2(String email, String name, String picture, LocalDate birthDate) {
+        String username = name;
         int counter = 1;
 
         while (userRepository.existsByUsername(username)) {
-            username = baseUsername + counter++;
+            username = name + counter++;
         }
 
         // Handling profile picture upload
@@ -97,6 +97,7 @@ public class Oauth2Handler extends SimpleUrlAuthenticationSuccessHandler {
                 .passwordHash("")
                 .username(username)
                 .avatarUrl(profileUrl)
+                .birthday(birthDate)
                 .role(Role.USER)
                 .isVerified(true)
                 .subscriptionType(SubscriptionType.FREE)
