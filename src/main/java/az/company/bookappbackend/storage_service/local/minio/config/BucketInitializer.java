@@ -1,6 +1,6 @@
-package az.company.bookappbackend.minio.config;
+package az.company.bookappbackend.storage_service.local.minio.config;
 
-import az.company.bookappbackend.minio.exceptions.MinioException;
+import az.company.bookappbackend.storage_service.local.minio.exception.MinioException;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;

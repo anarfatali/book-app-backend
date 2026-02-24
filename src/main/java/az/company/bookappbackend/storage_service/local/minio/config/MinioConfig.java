@@ -1,4 +1,4 @@
-package az.company.bookappbackend.minio.config;
+package az.company.bookappbackend.storage_service.local.minio.config;
 
 import io.minio.MinioClient;
 import lombok.Getter;
